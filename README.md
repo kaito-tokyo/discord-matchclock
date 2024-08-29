@@ -26,7 +26,6 @@ For client side, fill in the environment variables in `client/.env.example` and 
 
 ```
 VITE_CLIENT_ID=
-CLIENT_SECRET=
 ```
 
 Server is using `wrangler.toml` for environment variables. Create a `wrangler.toml` file in the `server` directory with the following content:
