@@ -22,9 +22,13 @@ function Participants({
   participants: DiscordTypes.GetActivityInstanceConnectedParticipantsResponse;
 }) {
   return (
-    <ul>
+    <div>
       {participants.participants.map((participant) => (
-        <li key={participant.id}>
+        <div key={participant.id} style={{
+          display: "flex",
+          gap: "1rem",
+          alignItems: "center",
+        }}>
           {participant.avatar && (
             <img
               src={`https://cdn.discordapp.com/avatars/${participant.id}/${participant.avatar}.png?size=64`}
@@ -37,9 +41,9 @@ function Participants({
             />
           )}
           <span>{participant.username}</span>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
@@ -53,7 +57,6 @@ function App() {
   useEffect(() => {
     async function setupDiscordSDK() {
       await discordSdk.ready();
-
       const { code } = await discordSdk.commands.authorize({
         client_id: import.meta.env.VITE_CLIENT_ID,
         response_type: "code",
