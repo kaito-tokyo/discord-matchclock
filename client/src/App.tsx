@@ -1,106 +1,96 @@
-import { useState, useEffect } from "react";
-import {
-  DiscordSDK,
-  Events as DiscordEvents,
-  type Types as DiscordTypes,
-} from "@discord/embedded-app-sdk";
+import { useState } from "react";
 
-const discordSdk = new DiscordSDK(import.meta.env.VITE_CLIENT_ID);
+const startingCallText = "試合開始";
+const callTexts = [
+  { millis: 10 * 60000, text: "残り10分" },
+  { millis: 5 * 60000, text: "残り5分" },
+  { millis: 1 * 60000, text: "残り1分" },
+  { millis: 0, text: "試合終了、速やかに試合を終了してください" },
+]
 
-type User = {
-  username: string;
-  discriminator: string;
-  id: string;
-  public_flags: number;
-  avatar?: string | null | undefined;
-  global_name?: string | null | undefined;
-};
-
-function Participants({
-  participants,
-}: {
-  participants: DiscordTypes.GetActivityInstanceConnectedParticipantsResponse;
-}) {
-  return (
-    <div>
-      {participants.participants.map((participant) => (
-        <div key={participant.id} style={{
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-        }}>
-          {participant.avatar && (
-            <img
-              src={`https://cdn.discordapp.com/avatars/${participant.id}/${participant.avatar}.png?size=64`}
-              alt={participant.username}
-              style={{
-                width: "4rem",
-                height: "4rem",
-                borderRadius: "1rem",
-              }}
-            />
-          )}
-          <span>{participant.username}</span>
-        </div>
-      ))}
-    </div>
-  );
+function say(text: string) {
+  speechSynthesis.speak(new SpeechSynthesisUtterance(text));
 }
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [participants, setParticipants] =
-    useState<DiscordTypes.GetActivityInstanceConnectedParticipantsResponse | null>(
-      null
-    );
+  const [timerState, setTimerState] = useState({
+    duration: 30 * 60000,
+    remainingMillis: 30 * 60000,
+    calledMillis: Infinity,
+    isRunning: false,
+    matchStart: 0,
+  });
 
-  useEffect(() => {
-    async function setupDiscordSDK() {
-      await discordSdk.ready();
-      const { code } = await discordSdk.commands.authorize({
-        client_id: import.meta.env.VITE_CLIENT_ID,
-        response_type: "code",
-        state: "",
-        prompt: "none",
-        scope: ["identify"],
-      });
+  function startTimer(timestamp: number) {
+    setTimerState(({duration, remainingMillis, calledMillis}) => ({
+      duration,
+      remainingMillis,
+      calledMillis,
+      isRunning: true,
+      matchStart: timestamp,
+    }));
+    say(startingCallText);
+    requestAnimationFrame(tick);
+  }
 
-      await fetch("/.proxy/api/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-        }),
-      }).then(async (res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
+  function tick(timestamp: number) {
+    setTimerState(({duration, calledMillis, isRunning, matchStart}) => {
+      const newRemainingMillis = duration - timestamp + matchStart;
+
+      for (const { millis, text } of callTexts) {
+        if (millis < calledMillis && newRemainingMillis <= millis) {
+          say(text);
+          calledMillis = millis;
+          break;
         }
-
-        const { access_token } = (await res.json()) as { access_token: string };
-
-        const auth = await discordSdk.commands.authenticate({
-          access_token,
-        });
-
-        setUser(auth.user);
-      });
-
-      function updateParticipants(
-        participants: DiscordTypes.GetActivityInstanceConnectedParticipantsResponse
-      ) {
-        setParticipants(participants);
       }
 
-      discordSdk.subscribe(
-        DiscordEvents.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE,
-        updateParticipants
-      );
-    }
+      if (newRemainingMillis < 0) {
+        return {
+          duration,
+          remainingMillis: 0,
+          calledMillis,
+          isRunning: false,
+          matchStart,
+        };
+      }
+      if (isRunning) {
+        requestAnimationFrame(tick);
+      }
 
-    setupDiscordSDK();
-  }, []);
+      return {
+        duration,
+        remainingMillis: newRemainingMillis,
+        calledMillis,
+        isRunning,
+        matchStart,
+      }
+    });
+  }
+
+  function handleStart() {
+    requestAnimationFrame(startTimer);
+  }
+
+  function handlePlus() {
+    setTimerState((state) => {
+      return {
+        ...state,
+        duration: state.duration + 60000,
+        remainingMillis: state.remainingMillis + 60000,
+      }
+    })
+  }
+
+  function handleMinus() {
+    setTimerState((state) => {
+      return {
+        ...state,
+        duration: state.duration - 60000,
+        remainingMillis: state.remainingMillis + 60000,
+      }
+    })
+  }
 
   return (
     <main
@@ -109,27 +99,17 @@ function App() {
         flexDirection: "column",
         gap: "1rem",
       }}
-    >
+      >
+
+      <button onClick={handleStart}>スタート</button>
+
       <section>
-        <h1>Discord Activity</h1>
-        <p>Instance ID: {discordSdk.instanceId}</p>
+        <h1>{Math.floor(timerState.remainingMillis / 60000).toString().padStart(2, '0')}:{Math.floor(timerState.remainingMillis % 60000 / 1000).toString().padStart(2, '0')}</h1>
       </section>
-      <section>
-        <h2>Auth</h2>
-        {user === null ? (
-          <p>Authenticating...</p>
-        ) : (
-          <div>Hello, {user.username}!</div>
-        )}
-      </section>
-      <section>
-        <h2>Participants</h2>
-        {participants === null ? (
-          <p>Fetching participants...</p>
-        ) : (
-          <Participants participants={participants} />
-        )}
-      </section>
+
+
+      <button onClick={handleMinus}>-1分</button>
+      <button onClick={handlePlus}>+1分</button>
     </main>
   );
 }
