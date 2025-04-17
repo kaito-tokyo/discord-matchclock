@@ -39,7 +39,7 @@ function App({discordSdk}: AppProps) {
       matchStart: timestamp,
     }));
     say(startingCallText);
-    requestAnimationFrame(tick);
+    setTimeout(tick, 1000, Date.now());
   }
 
   function tick(timestamp: number) {
@@ -63,22 +63,25 @@ function App({discordSdk}: AppProps) {
           matchStart,
         };
       }
+
       if (isRunning) {
-        requestAnimationFrame(tick);
+        setTimeout(tick, 1000, Date.now());
       }
 
-      return {
+      const nextPayload = {
         duration,
         remainingMillis: newRemainingMillis,
         calledMillis,
         isRunning,
         matchStart,
-      }
+      };
+
+      return nextPayload;
     });
   }
 
   function handleStart() {
-    requestAnimationFrame(startTimer);
+    setTimeout(tick, 1000)
   }
 
   function handlePlus() {

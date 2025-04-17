@@ -63,4 +63,9 @@ app.post("/token", async (c) => {
   return c.json({ access_token, error });
 });
 
+app.put("/timerState/:instanceId", async (c) => {
+  const { instanceId } = c.req.param();
+  return c.json(c.req.json());
+});
+
 export default app;
