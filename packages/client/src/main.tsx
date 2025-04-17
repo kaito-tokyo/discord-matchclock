@@ -32,7 +32,7 @@ async function setupDiscordSdk() {
   	}),
   });
   const { access_token } = await response.json();
-  console.log(access_token);
+  return access_token;
 
 //   auth = await discordSdk.commands.authenticate({
 //   	access_token,
@@ -43,10 +43,10 @@ async function setupDiscordSdk() {
 //   }
 }
 
-setupDiscordSdk().then(() => {
+setupDiscordSdk().then((access_token) => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App discordSdk={discordSdk} />
+      <App discordSdk={discordSdk} accessToken={access_token} />
     </StrictMode>,
   );
 });
