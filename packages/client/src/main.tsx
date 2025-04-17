@@ -19,7 +19,7 @@ async function setupDiscordSdk() {
   	response_type: 'code',
   	state: '',
   	prompt: 'none',
-	scope: [],
+	scope: ['identify'],
   });
 
   const response = await fetch('/.proxy/api/token', {
