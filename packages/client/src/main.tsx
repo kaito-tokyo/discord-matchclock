@@ -22,17 +22,17 @@ async function setupDiscordSdk() {
 	scope: ['identify'],
   });
 
-  const response = await fetch('/.proxy/api/token', {
-  	method: 'POST',
-  	headers: {
-  		'Content-Type': 'application/json',
-  	},
-  	body: JSON.stringify({
-  		code,
-  	}),
-  });
-  const { access_token } = await response.json();
-  console.log(access_token);
+//   const response = await fetch('/.proxy/api/token', {
+//   	method: 'POST',
+//   	headers: {
+//   		'Content-Type': 'application/json',
+//   	},
+//   	body: JSON.stringify({
+//   		code,
+//   	}),
+//   });
+//   const { access_token } = await response.json();
+//   console.log(access_token);
 
 //   auth = await discordSdk.commands.authenticate({
 //   	access_token,
