@@ -113,14 +113,22 @@ function App({discordSdk}: AppProps) {
       }}
       >
 
-      <button onClick={handleStart}>スタート</button>
+      <h1>試合タイマー</h1>
+      
+      <section>
+        <h1>二人で同時にスタートを押してください</h1>
+        <button onClick={handleStart}>スタート</button>
+      </section>
 
       <section>
         <h1>{Math.floor(timerState.remainingMillis / 60000).toString().padStart(2, '0')}:{Math.floor(timerState.remainingMillis % 60000 / 1000).toString().padStart(2, '0')}</h1>
       </section>
 
-      <button onClick={handleMinus}>-1分</button>
-      <button onClick={handlePlus}>+1分</button>
+      <section>
+        <h1>デバッグ用</h1>
+        <button onClick={handleMinus}>-1分</button>
+        <button onClick={handlePlus}>+1分</button>
+      </section>
 
       <section>
         <h1>{discordSdk.instanceId}</h1>
