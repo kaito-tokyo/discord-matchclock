@@ -67,9 +67,9 @@ async function setupDiscordSdk() {
 	// 	access_token,
 	// });
 
-	if (auth == null) {
-		throw new Error('Authenticate command failed');
-	}
+	// if (auth == null) {
+	// 	throw new Error('Authenticate command failed');
+	// }
 }
 
 // Once setupDiscordSdk is complete, we can assert that "auth" is initialized
