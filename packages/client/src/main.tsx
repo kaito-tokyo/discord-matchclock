@@ -34,14 +34,13 @@ async function setupDiscordSdk() {
   const { access_token } = await response.json();
   console.log(access_token);
 
-  // Authenticate with Discord client (using the access_token)
-  auth = await discordSdk.commands.authenticate({
-  	access_token,
-  });
+//   auth = await discordSdk.commands.authenticate({
+//   	access_token,
+//   });
 
-  if (auth == null) {
-  	throw new Error('Authenticate command failed');
-  }
+//   if (auth == null) {
+//   	throw new Error('Authenticate command failed');
+//   }
 }
 
 setupDiscordSdk().then(() => {
