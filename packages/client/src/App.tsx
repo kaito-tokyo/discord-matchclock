@@ -17,12 +17,10 @@ function say(text: string) {
 }
 
 interface AppProps {
-  accessToken: string;
   discordSdk: DiscordSDK;
 }
 
-function App({ accessToken, discordSdk }: AppProps) {
-  console.log(discordSdk);
+function App({ discordSdk }: AppProps) {
   const [timerState, setTimerState] = useState({
     duration: 30 * 60000,
     remainingMillis: 30 * 60000,
@@ -136,7 +134,6 @@ function App({ accessToken, discordSdk }: AppProps) {
         <h1>デバッグ用（使う時は二人同時に押す）</h1>
         <button onClick={handleMinus}>-1分</button>
         <button onClick={handlePlus}>+1分</button>
-        <h1>{accessToken}</h1>
       </section>
 
       <section>

@@ -13,40 +13,12 @@ const discordSdk = new DiscordSDK(import.meta.env.VITE_CLIENT_ID);
 
 async function setupDiscordSdk() {
   await discordSdk.ready();
-
-  const { code } = await discordSdk.commands.authorize({
-  	client_id: import.meta.env.VITE_CLIENT_ID,
-  	response_type: 'code',
-  	state: '',
-  	prompt: 'none',
-	scope: ['identify'],
-  });
-
-  const response = await fetch('/.proxy/api/token', {
-  	method: 'POST',
-  	headers: {
-  		'Content-Type': 'application/json',
-  	},
-  	body: JSON.stringify({
-  		code,
-  	}),
-  });
-  const { access_token } = await response.json();
-  return access_token;
-
-//   auth = await discordSdk.commands.authenticate({
-//   	access_token,
-//   });
-
-//   if (auth == null) {
-//   	throw new Error('Authenticate command failed');
-//   }
 }
 
 setupDiscordSdk().then((access_token) => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App discordSdk={discordSdk} accessToken={access_token} />
+      <App discordSdk={discordSdk} />
     </StrictMode>,
   );
 });
