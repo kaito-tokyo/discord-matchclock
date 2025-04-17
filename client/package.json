@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "wrangler pages deploy dist --project-name discord-activity-client",
+    "deploy": "wrangler pages deploy dist --project-name discord-matchclock",
     "tunnel": "cloudflared tunnel --url http://localhost:5173"
   },
   "dependencies": {
