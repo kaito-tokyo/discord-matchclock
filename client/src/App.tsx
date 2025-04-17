@@ -99,7 +99,7 @@ function App({discordSdk}: AppProps) {
       return {
         ...state,
         duration: state.duration - 60000,
-        remainingMillis: state.remainingMillis + 60000,
+        remainingMillis: state.remainingMillis - 60000,
       }
     })
   }
