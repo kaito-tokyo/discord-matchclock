@@ -16,7 +16,12 @@ function say(text: string) {
   speechSynthesis.speak(utterance);
 }
 
-function App(discordSdk: DiscordSDK) {
+interface AppProps {
+  discordSdk: DiscordSDK;
+}
+
+function App({discordSdk}: AppProps) {
+  console.log(discordSdk);
   const [timerState, setTimerState] = useState({
     duration: 30 * 60000,
     remainingMillis: 30 * 60000,

@@ -76,7 +76,7 @@ async function setupDiscordSdk() {
 setupDiscordSdk().then(() => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App />
+      <App discordSdk={discordSdk} />
     </StrictMode>
   );
 });
