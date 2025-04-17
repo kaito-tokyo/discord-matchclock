@@ -81,7 +81,7 @@ function App({discordSdk}: AppProps) {
   }
 
   function handleStart() {
-    setTimeout(tick, 1000)
+    startTimer(Date.now());
   }
 
   function handlePlus() {
