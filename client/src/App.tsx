@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { DiscordSDK } from '@discord/embedded-app-sdk';
+
 const startingCallText = "試合開始";
 const callTexts = [
   { millis: 10 * 60000, text: "残り10分" },
@@ -14,7 +16,7 @@ function say(text: string) {
   speechSynthesis.speak(utterance);
 }
 
-function App() {
+function App(discordSdk: DiscordSDK) {
   const [timerState, setTimerState] = useState({
     duration: 30 * 60000,
     remainingMillis: 30 * 60000,
