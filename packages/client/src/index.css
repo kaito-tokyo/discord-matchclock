@@ -31,7 +31,6 @@ section {
   padding: 1rem;
 }
 
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #111;

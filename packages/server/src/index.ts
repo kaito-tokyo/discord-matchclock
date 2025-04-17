@@ -46,7 +46,7 @@ app.post("/token", async (c) => {
         grant_type: "authorization_code",
         code,
       }),
-    }
+    },
   ).then(async (response) => {
     if (!response.ok) {
       console.error({

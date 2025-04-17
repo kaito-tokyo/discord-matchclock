@@ -1,0 +1,23 @@
+{
+  "name": "discord-matchclock",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Countdown clock for match",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaito-tokyo/discord-matchclock.git"
+  },
+  "author": "Kaito Udagawa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kaito-tokyo/discord-matchclock/issues"
+  },
+  "homepage": "https://github.com/kaito-tokyo/discord-matchclock#readme",
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ]
+}

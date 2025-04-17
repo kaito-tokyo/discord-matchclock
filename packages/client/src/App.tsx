@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { DiscordSDK } from '@discord/embedded-app-sdk';
+import { DiscordSDK } from "@discord/embedded-app-sdk";
 
 const startingCallText = "試合開始";
 const callTexts = [
@@ -8,7 +8,7 @@ const callTexts = [
   { millis: 5 * 60000, text: "残り5分" },
   { millis: 1 * 60000, text: "残り1分" },
   { millis: 0, text: "試合終了、速やかに試合を終了してください" },
-]
+];
 
 function say(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
@@ -20,7 +20,7 @@ interface AppProps {
   discordSdk: DiscordSDK;
 }
 
-function App({discordSdk}: AppProps) {
+function App({ discordSdk }: AppProps) {
   console.log(discordSdk);
   const [timerState, setTimerState] = useState({
     duration: 30 * 60000,
@@ -31,7 +31,7 @@ function App({discordSdk}: AppProps) {
   });
 
   function startTimer(timestamp: number) {
-    setTimerState(({duration, remainingMillis, calledMillis}) => ({
+    setTimerState(({ duration, remainingMillis, calledMillis }) => ({
       duration,
       remainingMillis,
       calledMillis,
@@ -43,7 +43,7 @@ function App({discordSdk}: AppProps) {
   }
 
   function tick(timestamp: number) {
-    setTimerState(({duration, calledMillis, isRunning, matchStart}) => {
+    setTimerState(({ duration, calledMillis, isRunning, matchStart }) => {
       const newRemainingMillis = duration - timestamp + matchStart;
 
       for (const { millis, text } of callTexts) {
@@ -90,8 +90,8 @@ function App({discordSdk}: AppProps) {
         ...state,
         duration: state.duration + 60000,
         remainingMillis: state.remainingMillis + 60000,
-      }
-    })
+      };
+    });
   }
 
   function handleMinus() {
@@ -100,8 +100,8 @@ function App({discordSdk}: AppProps) {
         ...state,
         duration: state.duration - 60000,
         remainingMillis: state.remainingMillis - 60000,
-      }
-    })
+      };
+    });
   }
 
   return (
@@ -111,17 +111,24 @@ function App({discordSdk}: AppProps) {
         flexDirection: "column",
         gap: "1rem",
       }}
-      >
-
+    >
       <h1>試合タイマー</h1>
-      
+
       <section>
         <h1>二人で同時にスタートを押してください</h1>
         <button onClick={handleStart}>スタート</button>
       </section>
 
       <section>
-        <h1>{Math.floor(timerState.remainingMillis / 60000).toString().padStart(2, '0')}:{Math.floor(timerState.remainingMillis % 60000 / 1000).toString().padStart(2, '0')}</h1>
+        <h1>
+          {Math.floor(timerState.remainingMillis / 60000)
+            .toString()
+            .padStart(2, "0")}
+          :
+          {Math.floor((timerState.remainingMillis % 60000) / 1000)
+            .toString()
+            .padStart(2, "0")}
+        </h1>
       </section>
 
       <section>
