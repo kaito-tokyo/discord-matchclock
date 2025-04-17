@@ -125,7 +125,7 @@ function App({discordSdk}: AppProps) {
       </section>
 
       <section>
-        <h1>デバッグ用</h1>
+        <h1>デバッグ用（使う時は二人同時に押す）</h1>
         <button onClick={handleMinus}>-1分</button>
         <button onClick={handlePlus}>+1分</button>
       </section>
