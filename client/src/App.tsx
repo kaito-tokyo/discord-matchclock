@@ -119,9 +119,12 @@ function App({discordSdk}: AppProps) {
         <h1>{Math.floor(timerState.remainingMillis / 60000).toString().padStart(2, '0')}:{Math.floor(timerState.remainingMillis % 60000 / 1000).toString().padStart(2, '0')}</h1>
       </section>
 
-
       <button onClick={handleMinus}>-1分</button>
       <button onClick={handlePlus}>+1分</button>
+
+      <section>
+        <h1>{discordSdk.instanceId}</h1>
+      </section>
     </main>
   );
 }
