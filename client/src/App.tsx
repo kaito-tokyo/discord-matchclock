@@ -9,7 +9,9 @@ const callTexts = [
 ]
 
 function say(text: string) {
-  speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "ja-JP";
+  speechSynthesis.speak(utterance);
 }
 
 function App() {
