@@ -1,31 +1,26 @@
-// import { DurableObject } from "cloudflare:workers";
+import { DurableObject } from "cloudflare:workers";
 
-// export class TimerDispatcher extends DurableObject {
-//   connections: Set<WebSocket> = new Set();
+export class TimerDispatcher extends DurableObject {
+  sql: SqlStorage;
 
-//   constructor(ctx: DurableObjectState, env: unknown) {
-//     super(ctx, env);
-//   }
+  constructor(ctx: DurableObjectState, env: unknown) {
+    super(ctx, env);
+    this.sql = ctx.storage.sql;
 
-//   async fetch(request: Request): Promise<Response> {
-//     const { 0: client, 1: server } = new WebSocketPair();
-//     console.error("client", client);
-//     this.ctx.acceptWebSocket(server);
-//     this.connections.add(client);
-//     console.error("connections", this.connections.size);
-//     return new Response(null, {
-//       status: 101,
-//       webSocket: client,
-//     });
-//   }
+    this.sql.exec(`
+      CREATE TABLE IF NOT EXISTS Events(
+        id INTEGER     PRIMARY KEY AUTOINCREMENT,
+        dispatched_at  INTEGER,
+        payload        JSON
+      );
+    `);
+  }
 
-//   async dispatch(event: string): Promise<Response> {
-//     console.error("Size", this.connections.size)
-//     for (const connection of this.connections) {
-//       connection.send(event);
-//     }
-//     return new Response(null, {
-//       status: 200,
-//     });
-//   }
-// }
+  async putEvent(dispatchedAt: number, payload: string) {
+    this.sql.exec("INSERT INTO Events(dispatched_at, payload) VALUES(?, ?);", [dispatchedAt, payload]);
+  }
+
+  async getEvents() {
+    return this.sql.exec("SELECT * FROM Events;");
+  }
+}
