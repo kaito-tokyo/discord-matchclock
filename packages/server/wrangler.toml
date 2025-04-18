@@ -3,3 +3,11 @@ name = "discord-matchclock"
 
 [observability.logs]
 enabled = true
+
+[[durable_objects.bindings]]
+name = "EVENT_RECORDER"
+class_name = "EventRecorder"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = [ "EventRecorder" ]
