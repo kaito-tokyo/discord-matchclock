@@ -15,7 +15,7 @@ app.get("/", (c) => {
 
 app.post("/events/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
-  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(instanceId);
+  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(`timer ${instanceId}`);
   const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
 
   const dispatchedAt = Number(c.req.query("dispatchedAt"));
