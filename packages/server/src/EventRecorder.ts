@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 
-export class TimerDispatcher extends DurableObject {
+export class EventRecorder extends DurableObject {
   sql: SqlStorage;
 
   constructor(ctx: DurableObjectState, env: unknown) {

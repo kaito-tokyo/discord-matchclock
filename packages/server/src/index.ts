@@ -1,10 +1,10 @@
 import { Hono } from "hono";
-import { TimerDispatcher } from "./TimerDispatcher.js";
+import { EventRecorder } from "./EventRecorder.js";
 
 type Bindings = {
   CLIENT_ID: string;
   CLIENT_SECRET: string;
-  TIMER_DISPATCHER: DurableObjectNamespace<TimerDispatcher>;
+  EVENT_RECORDER: DurableObjectNamespace<EventRecorder>;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -15,8 +15,8 @@ app.get("/", (c) => {
 
 app.post("/events/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
-  const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
-  const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
+  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(instanceId);
+  const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
 
   const dispatchedAt = Number(c.req.query("dispatchedAt"));
   const payload = await c.req.text();
@@ -27,11 +27,11 @@ app.post("/events/:instanceId", async (c) => {
 
 app.get("/events/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
-  const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
-  const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
+  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(i`timer ${instanceId}`);
+  const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
   const events = await timerDispatcher.getEvents();
   return c.json(events);
 });
 
 export default app;
-export { TimerDispatcher };
+export { EventRecorder };
