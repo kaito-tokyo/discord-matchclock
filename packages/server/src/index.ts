@@ -20,7 +20,7 @@ app.post("/events/:instanceId", async (c) => {
 
   const dispatchedAt = Number(c.req.query("dispatchedAt"));
   const payload = await c.req.text();
-  timerDispatcher.putEvent(dispatchedAt, payload);
+  await timerDispatcher.putEvent(dispatchedAt, payload);
 
   return c.text("OK");
 });
