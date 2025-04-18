@@ -1,8 +1,10 @@
 import { Hono } from "hono";
+import { TimerDispatcher } from "./TimerDispatcher.js";
 
 type Bindings = {
   CLIENT_ID: string;
   CLIENT_SECRET: string;
+  TIMER_DISPATCHER: DurableObjectNamespace<TimerDispatcher>;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -11,61 +13,26 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-app.post("/token", async (c) => {
-  const code = await c.req
-    .json()
-    .then(({ code }) => {
-      return code;
-    })
-    .catch(() => {
-      return undefined;
-    });
+app.get("/listen/:instanceId", async (c) => {
+  const upgradeHeader = c.req.header("Upgrade");
 
-  if (code === undefined) {
-    return c.json({ error: "Code is undefined" });
+  if (!upgradeHeader || upgradeHeader !== "websocket") {
+    return c.text("Expected websocket connection", 426);
   }
 
-  if (code === null) {
-    return c.json({ error: "Code is null" });
-  }
+  const { instanceId } = c.req.param();
+  const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
+  const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
 
-  if (typeof code !== "string") {
-    return c.json({ error: "Code is not a string" });
-  }
-
-  const { access_token, error } = await fetch(
-    `https://discord.com/api/oauth2/token`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: c.env.CLIENT_ID,
-        client_secret: c.env.CLIENT_SECRET,
-        grant_type: "authorization_code",
-        code,
-      }),
-    },
-  ).then(async (response) => {
-    if (!response.ok) {
-      console.error({
-        status: response.status,
-        details: response.statusText,
-        code,
-      });
-      return { access_token: "", error: "Failed to get access token" };
-    }
-
-    return response.json() as Promise<{ access_token: string; error: string }>;
-  });
-
-  return c.json({ access_token, error });
+  return await timerDispatcher.listen();
 });
 
-app.put("/timerState/:instanceId", async (c) => {
+app.post("/dispatch/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
-  return c.json(c.req.json());
+  const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
+  const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
+  return await timerDispatcher.dispatch(await c.req.text());
 });
 
 export default app;
+export { TimerDispatcher };
