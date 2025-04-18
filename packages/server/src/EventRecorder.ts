@@ -17,10 +17,11 @@ export class EventRecorder extends DurableObject {
   }
 
   async putEvent(dispatchedAt: number, payload: string) {
-    this.sql.exec("INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);", [
+    this.sql.exec(
+      "INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);",
       dispatchedAt,
       payload,
-    ]);
+    );
   }
 
   async getEvents() {
