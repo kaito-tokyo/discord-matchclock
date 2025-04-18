@@ -24,14 +24,14 @@ app.get("/listen/:instanceId", async (c) => {
   const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
   const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
 
-  return await timerDispatcher.listen();
+  return timerDispatcher.listen();
 });
 
 app.post("/dispatch/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
   const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
-  return await timerDispatcher.dispatch(await c.req.text());
+  return timerDispatcher.dispatch(await c.req.text());
 });
 
 export default app;
