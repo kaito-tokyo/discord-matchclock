@@ -12,8 +12,8 @@ export class EventRecorder extends DurableObject {
         id INTEGER     PRIMARY KEY AUTOINCREMENT,
         dispatched_at  INTEGER,
         payload        JSON
-      );INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);
-    `, 123, "111");
+      );
+    `);
   }
 
   async putEvent(dispatchedAt: number, payload: string) {
@@ -22,6 +22,7 @@ export class EventRecorder extends DurableObject {
       dispatchedAt,
       payload,
     );
+    console.error("aaa", this.sql.exec("SELECT * FROM Events;").toArray());
   }
 
   async getEvents() {
