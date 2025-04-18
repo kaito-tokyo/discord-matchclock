@@ -111,13 +111,6 @@ function App({ discordSdk }: AppProps) {
         gap: "1rem",
       }}
     >
-      <h1>試合タイマー</h1>
-
-      <section>
-        <h1>二人で同時にスタートを押してください</h1>
-        <button onClick={handleStart}>スタート</button>
-      </section>
-
       <section>
         <h1>
           {Math.floor(timerState.remainingMillis / 60000)
@@ -128,6 +121,13 @@ function App({ discordSdk }: AppProps) {
             .toString()
             .padStart(2, "0")}
         </h1>
+      </section>
+
+      <h1>試合タイマー</h1>
+
+      <section>
+        <h1>二人で同時にスタートを押してください</h1>
+        <button onClick={handleStart}>スタート</button>
       </section>
 
       <section>
