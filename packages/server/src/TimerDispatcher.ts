@@ -18,7 +18,7 @@ export class TimerDispatcher extends DurableObject {
   }
 
   async dispatch(event: string): Promise<Response> {
-    console.log("Size", this.connections.size)
+    console.error("Size", this.connections.size)
     for (const connection of this.connections) {
       connection.send(event);
     }
