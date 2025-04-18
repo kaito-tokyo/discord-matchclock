@@ -10,4 +10,4 @@ class_name = "TimerDispatcher"
 
 [[migrations]]
 tag = "v1"
-new_classes = [ "TimerDispatcher" ]
+new_sqlite_classes = [ "TimerDispatcher" ]
