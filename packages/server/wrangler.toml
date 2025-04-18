@@ -7,3 +7,7 @@ enabled = true
 [[durable_objects.bindings]]
 name = "TIMER_DISPATCHER"
 class_name = "TimerDispatcher"
+
+[[migrations]]
+tag = "v1"
+new_classes = [ "TimerDispatcher" ]
