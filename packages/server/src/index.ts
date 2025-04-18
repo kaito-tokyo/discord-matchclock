@@ -23,6 +23,7 @@ app.get("/listen/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
   const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
+  console.error("a", timerDispatcherId);
 
   return timerDispatcher.fetch(c.req.raw);
 });
@@ -31,6 +32,7 @@ app.post("/dispatch/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.TIMER_DISPATCHER.idFromName(instanceId);
   const timerDispatcher = c.env.TIMER_DISPATCHER.get(timerDispatcherId);
+  console.error("a", timerDispatcherId);
   return timerDispatcher.dispatch(await c.req.text());
 });
 
