@@ -24,6 +24,6 @@ export class EventRecorder extends DurableObject {
   }
 
   async getEvents() {
-    return this.sql.exec("SELECT * FROM Events;");
+    return this.sql.exec("SELECT * FROM Events;").toArray();
   }
 }
