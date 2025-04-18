@@ -19,11 +19,11 @@ export class EventRecorder extends DurableObject {
   async putEvent(dispatchedAt: number, payload: string) {
     this.sql.exec(
       "INSERT INTO Events (dispatched_at, payload) VALUES (5, 'aaa')",
-    ).next();
-    console.error("aaa", this.sql.exec("SELECT * FROM Events;").toArray());
+    );
   }
 
   async getEvents() {
+    console.error(this.sql.exec("SELECT * FROM Events;").toArray());
     return this.sql.exec("SELECT * FROM Events;").toArray();
   }
 }
