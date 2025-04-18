@@ -112,9 +112,11 @@ function App({ discordSdk }: AppProps) {
       }}
     >
       <section>
-        <h1 style={{
-          fontSize: "100px",
-        }}>
+        <h1
+          style={{
+            fontSize: "100px",
+          }}
+        >
           {Math.floor(timerState.remainingMillis / 60000)
             .toString()
             .padStart(2, "0")}

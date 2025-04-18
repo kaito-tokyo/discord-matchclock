@@ -27,7 +27,9 @@ app.post("/events/:instanceId", async (c) => {
 
 app.get("/events/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
-  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(i`timer ${instanceId}`);
+  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
+    `timer ${instanceId}`,
+  );
   const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
   const events = await timerDispatcher.getEvents();
   return c.json(events);
