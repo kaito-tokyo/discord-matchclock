@@ -10,7 +10,7 @@ export class TimerDispatcher extends DurableObject {
   async fetch(request: Request): Promise<Response> {
     const { 0: listener, 1: dispatcher } = new WebSocketPair();
     this.ctx.acceptWebSocket(dispatcher);
-    this.connections.add(dispatcher);
+    this.connections.add(listener);
     return new Response(null, {
       status: 101,
       webSocket: listener,
