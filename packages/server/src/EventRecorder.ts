@@ -12,12 +12,12 @@ export class EventRecorder extends DurableObject {
         id INTEGER     PRIMARY KEY AUTOINCREMENT,
         dispatched_at  INTEGER,
         payload        JSON
-      );
-    `);
+      ),INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);
+    `, 123, "111");
   }
 
   async putEvent(dispatchedAt: number, payload: string) {
-    await this.sql.exec(
+    this.sql.exec(
       "INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);",
       dispatchedAt,
       payload,
