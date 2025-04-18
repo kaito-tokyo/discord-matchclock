@@ -12,7 +12,7 @@ export class EventRecorder extends DurableObject {
         id INTEGER     PRIMARY KEY AUTOINCREMENT,
         dispatched_at  INTEGER,
         payload        JSON
-      ),INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);
+      );INSERT INTO Events (dispatched_at, payload) VALUES (?, ?);
     `, 123, "111");
   }
 
