@@ -105,7 +105,10 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
-  async function dispatchTimerEvent(instanceId: string, timerEvent: TimerEvent): Promise<void> {
+  async function dispatchTimerEvent(
+    instanceId: string,
+    timerEvent: TimerEvent,
+  ): Promise<void> {
     const response = await fetch(
       `/.proxy/api/timerEvents/${instanceId}?dispatchedAt=${Date.now()}`,
       {
@@ -138,7 +141,11 @@ function App({ discordSdk }: AppProps) {
   useEffect(() => {
     setInterval(async () => {
       const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
-      setTimerEvents(newTimerEvents);
+      setTimerEvents((oldTimerEvents) =>
+        oldTimerEvents.length === newTimerEvents.length
+          ? oldTimerEvents
+          : newTimerEvents,
+      );
     }, 1000);
   }, []);
 
@@ -193,9 +200,7 @@ function App({ discordSdk }: AppProps) {
         <h1>{discordSdk.instanceId}</h1>
       </section>
 
-      <section>
-        {JSON.stringify(timerEvents)}
-      </section>
+      <section>{JSON.stringify(timerEvents)}</section>
     </main>
   );
 }
