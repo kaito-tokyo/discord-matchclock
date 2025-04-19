@@ -1,0 +1,35 @@
+name: "build-server"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+defaults:
+  run:
+    shell: "basj"
+
+jobs:
+  BuildServer:
+    runs-on: "ubuntu-24.04-arm"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Set up Node.js"
+        uses: "actions/setup-node@v4"
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: "Install dependencies"
+        working-directory: "packages/server"
+        run: "npm ci"
+
+      - name: "Run wrangler build"
+        working-directory: "packages/server"
+        run: "npx wrangler build"
