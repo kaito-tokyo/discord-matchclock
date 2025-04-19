@@ -146,9 +146,11 @@ function App({ discordSdk }: AppProps) {
     dispatchTimerEvent(discordSdk.instanceId, {
       type: "TimerStartEvent",
     });
-    startTimer(Date.now());
   }
 
+  useEffect(() => {
+    startTimer(Date.now());
+  }, [timerEvents]);
 
   return (
     <main
