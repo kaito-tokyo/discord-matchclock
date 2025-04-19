@@ -9,7 +9,7 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-app.post("/events/:instanceId", async (c) => {
+app.post("/timerEvents/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
     `timer ${instanceId}`,
@@ -23,7 +23,7 @@ app.post("/events/:instanceId", async (c) => {
   return c.text("OK");
 });
 
-app.get("/events/:instanceId", async (c) => {
+app.get("/timerEvents/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
     `timer ${instanceId}`,

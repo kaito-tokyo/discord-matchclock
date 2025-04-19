@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 
@@ -9,6 +9,12 @@ const callTexts = [
   { millis: 1 * 60000, text: "残り1分" },
   { millis: 0, text: "試合終了、速やかに試合を終了してください" },
 ];
+
+interface TimerStartEvent {
+  readonly type: "TimerStartEvent";
+}
+
+type TimerEvent = TimerStartEvent;
 
 function say(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
@@ -103,6 +109,28 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
+  async function fetchTimerEvents(instanceId: string): Promise<TimerEvent[]> {
+    const response = await fetch(`/.proxy/api/timerEvents/${instanceId}`);
+
+    if (!response.ok) {
+      console.error("Failed to fetch events", response);
+      throw new Error("Failed to fetch events");
+    }
+
+    const timerEvents: TimerEvent[] = await response.json();
+
+    return timerEvents;
+  }
+
+  const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
+
+  useEffect(() => {
+    setInterval(async () => {
+      const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
+      setTimerEvents(newTimerEvents);
+    }, 1000);
+  }, []);
+
   return (
     <main
       style={{
@@ -142,6 +170,10 @@ function App({ discordSdk }: AppProps) {
 
       <section>
         <h1>{discordSdk.instanceId}</h1>
+      </section>
+
+      <section>
+        {JSON.stringify(timerEvents)}
       </section>
     </main>
   );
