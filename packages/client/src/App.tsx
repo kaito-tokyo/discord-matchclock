@@ -156,6 +156,9 @@ function App({ discordSdk }: AppProps) {
   }
 
   useEffect(() => {
+    if (timerEvents.length === 0) {
+      return;
+    }
     startTimer(Date.now());
   }, [timerEvents]);
 
