@@ -85,10 +85,6 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
-  function handleStart() {
-    startTimer(Date.now());
-  }
-
   function handlePlus() {
     setTimerState((state) => {
       return {
@@ -107,6 +103,21 @@ function App({ discordSdk }: AppProps) {
         remainingMillis: state.remainingMillis - 60000,
       };
     });
+  }
+
+  async function dispatchTimerEvent(instanceId: string, timerEvent: TimerEvent): Promise<void> {
+    const response = await fetch(
+      `/.proxy/api/timerEvents/${instanceId}?dispatchedAt=${Date.now()}`,
+      {
+        method: "POST",
+        body: JSON.stringify(timerEvent),
+      },
+    );
+
+    if (!response.ok) {
+      console.error("Failed to push event", response);
+      throw new Error("Failed to push event");
+    }
   }
 
   async function fetchTimerEvents(instanceId: string): Promise<TimerEvent[]> {
@@ -130,6 +141,14 @@ function App({ discordSdk }: AppProps) {
       setTimerEvents(newTimerEvents);
     }, 1000);
   }, []);
+
+  function handleStart() {
+    dispatchTimerEvent(discordSdk.instanceId, {
+      type: "TimerStartEvent",
+    });
+    startTimer(Date.now());
+  }
+
 
   return (
     <main
