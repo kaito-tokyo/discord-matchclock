@@ -1,11 +1,7 @@
 import { Hono } from "hono";
-import { EventRecorder } from "./EventRecorder.js";
 
-type Bindings = {
-  CLIENT_ID: string;
-  CLIENT_SECRET: string;
-  EVENT_RECORDER: DurableObjectNamespace<EventRecorder>;
-};
+import { Bindings } from "./Bindings.js";
+import { EventRecorder } from "./EventRecorder.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 

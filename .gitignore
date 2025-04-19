@@ -1,4 +1,5 @@
 .DS_Store
 .wrangler
 *.tsbuildinfo
+dist/
 node_modules/

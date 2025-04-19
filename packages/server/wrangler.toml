@@ -1,5 +1,6 @@
 compatibility_date = "2025-04-17"
 name = "discord-matchclock"
+main = "src/index.ts"
 
 [observability.logs]
 enabled = true
