@@ -104,20 +104,23 @@ function App({ discordSdk }: AppProps) {
     }
   }
 
-  useEffect(() => {
-    setInterval(async () => {
-      const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
-      setTimerEvents((oldTimerEvents) => {
-        if (newTimerEvents.length === oldTimerEvents.length) {
-          return oldTimerEvents;
-        } else {
-          for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
-            handleTimerEvent(newTimerEvents[i]);
-          }
-          return newTimerEvents;
+  async function tickTimerEvent() {
+    const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
+    setTimerEvents((oldTimerEvents) => {
+      if (newTimerEvents.length === oldTimerEvents.length) {
+        return oldTimerEvents;
+      } else {
+        for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
+          handleTimerEvent(newTimerEvents[i]);
         }
-      });
-    }, 1000);
+        return newTimerEvents;
+      }
+    });
+  }
+
+  useEffect(() => {
+    setInterval(tickTimerEvent, 1000);
+    tickTimerEvent();
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
 
