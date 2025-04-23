@@ -99,13 +99,13 @@ function App({ discordSdk }: AppProps) {
         tick();
         break;
       case "TimerStoppedEvent":
+        if (timerState.tickTimerStateId !== undefined) {
+          clearInterval(timerState.tickTimerStateId);
+        }
         setTimerState((oldTimerState) => ({
           ...oldTimerState,
           tickTimerStateId: undefined,
         }));
-        if (timerState.tickTimerStateId !== undefined) {
-          clearInterval(timerState.tickTimerStateId);
-        }
     }
   }
 
