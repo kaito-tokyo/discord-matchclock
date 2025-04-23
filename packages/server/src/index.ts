@@ -26,7 +26,7 @@ app.post("/", async (c) => {
   }
   console.error("Timestamp", timestamp);
 
-  console.log("Body", await c.req.text());
+  console.error("Body", await c.req.text());
 
   const { DISCORD_PUBLIC_KEY } = c.env;
   if (!DISCORD_PUBLIC_KEY) {
