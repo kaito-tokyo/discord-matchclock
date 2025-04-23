@@ -98,7 +98,14 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
-        setTimeout(tick, 1000);
+        setTimerState(({ duration, remainingMillis, calledMillis }) => ({
+          duration,
+          remainingMillis,
+          calledMillis,
+          isRunning: true,
+          matchStart: event.dispatchedAt,
+        }));
+        setInterval(tick, 1000);
         break;
       default: {
         say("aaa")
