@@ -212,6 +212,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
+        <h1>10秒ごとに自動同期します</h1>
         <button
           onClick={handleStart}
           disabled={timerState.tickTimerStateId !== undefined}
