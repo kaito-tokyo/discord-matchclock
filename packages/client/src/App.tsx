@@ -87,6 +87,9 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
+        if (timerState.tickTimerStateId !== undefined) {
+          clearInterval(timerState.tickTimerStateId);
+        }
         const tickTimerStateId = setInterval(tick, 1000);
         setTimerState((oldTimerState) => ({
           ...oldTimerState,
@@ -163,10 +166,10 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <button onClick={handleStart} disabled={timerState.isRunning}>
+        <button onClick={handleStart} disabled={timerState.tickTimerStateId === undefined}>
           スタート
         </button>
-        <button onClick={handleStop} disabled={!timerState.isRunning}>
+        <button onClick={handleStop} disabled={timerState.tickTimerStateId === undefined}>
           ストップ
         </button>
       </section>
