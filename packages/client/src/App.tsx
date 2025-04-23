@@ -123,6 +123,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           return {
             ...oldTimerState,
             durationInMillis: event.remainingMillis - elappsedMillis,
+            offsetMillis: event.dispatchedAt,
           };
         });
     }
