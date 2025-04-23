@@ -201,6 +201,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         flexDirection: "column",
         gap: "1rem",
         filter: bodyFilter,
+        transition: "filter 0.5s",
       }}
     >
       <section>
