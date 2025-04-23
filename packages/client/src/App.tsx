@@ -102,13 +102,15 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         });
         break;
       case "TimerStoppedEvent":
-        if (timerState.tickTimerStateId !== undefined) {
-          clearInterval(timerState.tickTimerStateId);
-        }
-        setTimerState((oldTimerState) => ({
-          ...oldTimerState,
-          tickTimerStateId: undefined,
-        }));
+        setTimerState((oldTimerState) => {
+          if (oldTimerState.tickTimerStateId !== undefined) {
+            clearInterval(oldTimerState.tickTimerStateId);
+          }
+          return {
+            ...oldTimerState,
+            tickTimerStateId: undefined,
+          };
+        });
     }
   }
 
