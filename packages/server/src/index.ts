@@ -68,7 +68,7 @@ app.get("/register", async (c) => {
     console.log("Successfully registered global command");
   } else {
     console.error("Failed to register global command", await response.text());
-    throw new Error("Failed to register global command");
+    return c.text(await response.text());
   }
 })
 
