@@ -152,7 +152,7 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <button onClick={handleStart}>スタート</button>
+        <button onClick={handleStart} disabled={!timerState.isRunning}>スタート</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
