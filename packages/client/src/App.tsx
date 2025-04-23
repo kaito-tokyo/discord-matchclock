@@ -60,7 +60,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       let calledMillis = Infinity;
       for (const { millis, text } of callTexts) {
         if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
-          //say(text);
+          say(text);
           calledMillis = millis;
           break;
         }
@@ -144,7 +144,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }
 
   useEffect(() => {
-    setInterval(tickTimerEvent, 1000);
+    setInterval(tickTimerEvent, 10000);
     tickTimerEvent();
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
@@ -179,6 +179,10 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       timerState.remainingMillis - elappsedMillis - 60000,
     );
     tick();
+  }
+
+  function handleSync() {
+    tickTimerEvent();
   }
 
   return (
@@ -222,6 +226,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         </button>
         <button onClick={handlePlus}>+1分</button>
         <button onClick={handleMinus}>-1分</button>
+        <button onClick={handleSync}>同期</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
