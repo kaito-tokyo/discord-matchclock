@@ -5,6 +5,7 @@ import { InteractionResponseType, InteractionType, verifyKey } from "discord-int
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
+import { handleMatchclock } from "./bot/handleMatchclock.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -39,6 +40,13 @@ app.post("/", async (c) => {
 
   if (interaction.type === InteractionType.PING) {
     return c.json({ type: InteractionResponseType.PONG });
+  } if (interaction.type === InteractionType.APPLICATION_COMMAND) {
+    switch (interaction.data.name) {
+      case MATCHCLOCK_COMMAND.name.toLowerCase():
+        return await handleMatchclock(interaction);
+      default:
+        throw new Error(`Unknown command: ${interaction.data.name}`);
+    }
   } else {
     return c.text("Unknown interaction type!", 400);
   }
