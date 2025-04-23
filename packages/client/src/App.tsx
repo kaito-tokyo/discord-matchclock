@@ -76,6 +76,7 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
+
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
   function handleTimerEvent(event: TimerEvent) {
@@ -112,7 +113,12 @@ function App({ discordSdk }: AppProps) {
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
 
+
   function handleStart() {
+    dispatchTimerStarted(discordSdk.instanceId, Date.now());
+  }
+
+  function handleStop() {
     dispatchTimerStarted(discordSdk.instanceId, Date.now());
   }
 
@@ -144,6 +150,7 @@ function App({ discordSdk }: AppProps) {
 
       <section>
         <button onClick={handleStart} disabled={timerState.isRunning}>スタート</button>
+        <button onClick={handleStart} disabled={timerState.isRunning}>ストップ</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>

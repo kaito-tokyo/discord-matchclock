@@ -8,7 +8,18 @@ export interface TimerStartedEvent {
   readonly type: "TimerStartedEvent";
 }
 
-export type TimerEvent = TimerLaunchedEvent | TimerStartedEvent;
+export interface TimerStoppedEvent {
+  readonly dispatchedAt: number;
+  readonly type: "TimerStoppedEvent";
+}
+
+export type TimerEvent = TimerLaunchedEvent | TimerStartedEvent | TimerStoppedEvent;
+
+interface TimerEventRecord {
+  readonly dispatchedAt: number;
+  readonly type: "TimerLaunchedEvent" | "TimerStartEvent";
+  readonly payload: string;
+}
 
 export async function fetchTimerEvents(
   instanceId: string,
@@ -72,8 +83,16 @@ export async function dispatchTimerStarted(
   );
 }
 
-interface TimerEventRecord {
-  readonly dispatchedAt: number;
-  readonly type: "TimerLaunchedEvent" | "TimerStartEvent";
-  readonly payload: string;
+export async function dispatchTimerStopped(
+  instanceId: string,
+  dispatchedAt: number,
+): Promise<void> {
+  dispatchTimerEvent(
+    instanceId,
+    {
+      dispatchedAt,
+      type: "TimerStoppedEvent",
+    },
+    dispatchedAt,
+  );
 }
