@@ -42,7 +42,12 @@ app.post("/", async (c) => {
     switch (interaction.data.name.toLowerCase()) {
       case "matchclock":
         console.error("Received matchclock command", JSON.stringify(await handleMatchclock(interaction)));
-        return c.json(await handleMatchclock(interaction));
+        return c.json({
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: "aaa"
+          }
+        });
       default:
         throw new Error(`Unknown command: ${interaction.data.name}`);
     }
