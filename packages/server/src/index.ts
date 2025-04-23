@@ -1,11 +1,30 @@
 import { Hono } from "hono";
 
+import { verifyKey } from "discord-interactions";
+
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 
 import "./bot/register.js"
+import { sign } from "hono/jwt";
+
+const { DISCORD_PUBLIC_KEY } = process.env;
+
+if (DISCORD_PUBLIC_KEY === undefined) {
+  throw new Error("DISCORD_PUBLIC_KEY is not set");
+}
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+app.post("/", async (c) => {
+  const rawBody = await c.req.raw();
+  const signature = c.req.header("X-Signature-Ed25519") ?? "";
+  const timestamp = c.req.header("X-Signature-Timestamp") ?? "";
+  const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
+  if (!isValidRequest) {
+    return c.text("Bad request signature!", 401);
+  }
+});
 
 app.post("/timerEvents/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
