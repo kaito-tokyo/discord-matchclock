@@ -10,7 +10,7 @@ import { verifyKey } from "discord-interactions";
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
-import { handleMatchclockCommand } from "./bot/handleMatchclock.js";
+import { handleConfigureMatchclockSubmit, handleMatchclockCommand } from "./bot/handleMatchclock.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -55,8 +55,7 @@ app.post("/", async (c) => {
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     if (interaction.data.custom_id === "configure_matchclock") {
-      const response = await handleMatchclock(interaction);
-      return c.json(response);
+      return c.json(await handleConfigureMatchclockSubmit(interaction));
     } else {
       throw new Error(`Unknown modal: ${interaction.data.custom_id}`);
     }
