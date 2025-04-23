@@ -111,6 +111,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             tickTimerStateId: undefined,
           };
         });
+        tick();
     }
   }
 
