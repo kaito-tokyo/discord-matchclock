@@ -147,9 +147,10 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }
 
   useEffect(() => {
-    setInterval(tickTimerEvent, 10000);
-    tickTimerEvent();
-    dispatchTimerLaunched(discordSdk.instanceId, Date.now());
+    dispatchTimerLaunched(discordSdk.instanceId, Date.now()).then(() => {
+      setInterval(tickTimerEvent, 10000);
+      tickTimerEvent();  
+    });
   }, []);
 
   async function handleStart() {
