@@ -2,6 +2,10 @@ compatibility_date = "2025-04-02"
 name = "discord-matchclock"
 main = "src/index.ts"
 
+[vars]
+DISCORD_APPLICATION_ID = "1362437550756855858"
+DISCORD_PUBLIC_KEY = "019619cfdfa3928f258db6fa434852b7e9c8ca2f6e35dd1a97f82cccc1c9c8a4"
+
 [observability.logs]
 enabled = true
 
