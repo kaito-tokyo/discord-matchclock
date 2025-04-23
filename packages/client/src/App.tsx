@@ -167,6 +167,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       dispatchedAt,
       timerState.remainingMillis - elappsedMillis + 60000,
     );
+    tick();
   }
 
   function handleMinus() {
@@ -177,6 +178,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       dispatchedAt,
       timerState.remainingMillis - elappsedMillis - 60000,
     );
+    tick();
   }
 
   return (
