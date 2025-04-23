@@ -1,17 +1,14 @@
 import { Hono } from "hono";
 
-import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
+import { verifyKey } from "discord-interactions";
 
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
 import { handleMatchclock } from "./bot/handleMatchclock.js";
+import { APIInteraction, InteractionResponseType, InteractionType } from "discord-api-types/v10";
 
 const app = new Hono<{ Bindings: Bindings }>();
-
-interface DiscordInteraction {
-  readonly type: InteractionType;
-}
 
 app.post("/", async (c) => {
   const { DISCORD_PUBLIC_KEY } = c.env;
@@ -36,12 +33,12 @@ app.post("/", async (c) => {
     return c.text("Bad request signature!", 401);
   }
 
-  const interaction = await c.req.json();
+  const interaction: APIInteraction = await c.req.json();
   console.error("Received interaction", JSON.stringify(interaction));
 
-  if (interaction.type === InteractionType.PING) {
-    return c.json({ type: InteractionResponseType.PONG });
-  } if (interaction.type === InteractionType.APPLICATION_COMMAND) {
+  if (interaction.type === InteractionType.Ping) {
+    return c.json({ type: InteractionResponseType.Pong });
+  } if (interaction.type === InteractionType.ApplicationCommand) {
     switch (interaction.data.name.toLowerCase()) {
       case "matchclock":
         console.error("Received matchclock command", JSON.stringify(await handleMatchclock(interaction)));
