@@ -9,6 +9,7 @@ import {
   dispatchTimerStarted,
   dispatchTimerStopped,
 } from "./TimerEvents.js";
+import { MatchclockConfig } from "discord-matchclock-common";
 
 const callTexts = [
   { millis: 10 * 60000, text: "残り10分" },
@@ -30,13 +31,14 @@ function say(text: string) {
 }
 
 interface AppProps {
-  discordSdk: DiscordSDK;
+  readonly discordSdk: DiscordSDK;
+  readonly matchclockConfig: MatchclockConfig;
 }
 
-function App({ discordSdk }: AppProps) {
+function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerState, setTimerState] = useState({
-    duration: 30 * 60000,
-    remainingMillis: 30 * 60000,
+    duration: matchclockConfig.durationInMinutes * 60000,
+    remainingMillis: matchclockConfig.durationInMinutes * 60000,
     calledMillis: Infinity,
     isRunning: false,
     matchStart: 0,
