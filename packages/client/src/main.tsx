@@ -6,7 +6,7 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 import {
   defaultMatchclockConfig,
   MatchclockConfig,
-} from "discord-matchclock-common";
+} from "discord-matchclock-common/MatchclockConfig.js";
 
 import App from "./App.tsx";
 import "./index.css";

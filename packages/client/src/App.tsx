@@ -9,7 +9,7 @@ import {
   dispatchTimerStarted,
   dispatchTimerStopped,
 } from "./TimerEvents.js";
-import { MatchclockConfig } from "discord-matchclock-common";
+import { MatchclockConfig } from "discord-matchclock-common/MatchclockConfig.js";
 
 const callTexts = [
   { millis: 10 * 60000, text: "残り10分" },
