@@ -162,7 +162,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   async function handleStop() {
     await dispatchTimerStopped(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
-    await tick();
   }
 
   async function handlePlus() {
@@ -191,6 +190,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
 
   async function handleSync() {
     await tickTimerEvent();
+    await tick();
   }
 
   return (
