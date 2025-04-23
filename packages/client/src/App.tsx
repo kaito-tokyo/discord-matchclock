@@ -88,7 +88,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   function handleTimerEvent(event: TimerEvent) {
     switch (event.type) {
       case "TimerStartedEvent":
-        say(eventCallTexts.TimerStartedEvent.text);
         setTimerState((oldTimerState) => {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
@@ -101,7 +100,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         });
         break;
       case "TimerStoppedEvent":
-        say(eventCallTexts.TimerStoppedEvent.text);
         setTimerState((oldTimerState) => {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
