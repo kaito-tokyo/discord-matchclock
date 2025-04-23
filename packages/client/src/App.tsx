@@ -40,20 +40,20 @@ interface AppProps {
 
 function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerState, setTimerState] = useState({
-    remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
-    calledMillis: Infinity,
-    isRunning: false,
-    offsetMillis: 0,
     tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
+    durationInMillis: matchclockConfig.defaultDurationInMinutes * 60000,
+    offsetMillis: 0,
+    calledMillis: Infinity,
+    remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000
   });
 
   function tick(now: number = Date.now()) {
     setTimerState(
       (oldTimerState) => {
-        const { offsetMillis } = oldTimerState;
+        const { durationInMillis, offsetMillis } = oldTimerState;
 
         const elappsedMillis = now - offsetMillis;
-        const remainingMillis = oldTimerState.remainingMillis - elappsedMillis;
+        const remainingMillis = durationInMillis - elappsedMillis;
 
         let calledMillis = Infinity;
         for (const { millis, text } of callTexts) {
