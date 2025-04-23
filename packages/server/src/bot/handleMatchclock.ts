@@ -1,6 +1,13 @@
-import { APIInteractionResponse, ComponentType, InteractionResponseType } from "discord-api-types/v10";
+import {
+  APIInteractionResponse,
+  ComponentType,
+  InteractionResponseType,
+  TextInputStyle,
+} from "discord-api-types/v10";
 
-export async function handleMatchclock(interaction: any): Promise<APIInteractionResponse> {
+export async function handleMatchclock(
+  interaction: any,
+): Promise<APIInteractionResponse> {
   return {
     type: InteractionResponseType.Modal,
     data: {
@@ -9,9 +16,16 @@ export async function handleMatchclock(interaction: any): Promise<APIInteraction
       components: [
         {
           type: ComponentType.ActionRow,
-          components: []
-        }
-      ]
-    }
+          components: [
+            {
+              type: ComponentType.TextInput,
+              custom_id: "default_duration",
+              style: TextInputStyle.Short,
+              label: "Default duration in minutes",
+            },
+          ],
+        },
+      ],
+    },
   };
 }

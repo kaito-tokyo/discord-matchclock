@@ -6,7 +6,11 @@ import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
 import { handleMatchclock } from "./bot/handleMatchclock.js";
-import { APIInteraction, InteractionResponseType, InteractionType } from "discord-api-types/v10";
+import {
+  APIInteraction,
+  InteractionResponseType,
+  InteractionType,
+} from "discord-api-types/v10";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -28,7 +32,12 @@ app.post("/", async (c) => {
 
   const rawBody = await c.req.arrayBuffer();
 
-  const isValidRequest = await verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
+  const isValidRequest = await verifyKey(
+    rawBody,
+    signature,
+    timestamp,
+    c.env.DISCORD_PUBLIC_KEY,
+  );
   if (!isValidRequest) {
     return c.text("Bad request signature!", 401);
   }
@@ -38,16 +47,11 @@ app.post("/", async (c) => {
 
   if (interaction.type === InteractionType.Ping) {
     return c.json({ type: InteractionResponseType.Pong });
-  } if (interaction.type === InteractionType.ApplicationCommand) {
+  }
+  if (interaction.type === InteractionType.ApplicationCommand) {
     switch (interaction.data.name.toLowerCase()) {
       case "matchclock":
-        console.error("Received matchclock command", JSON.stringify(await handleMatchclock(interaction)));
-        return c.json({
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            content: "aaa"
-          }
-        });
+        return c.json(await handleMatchclock(interaction));
       default:
         throw new Error(`Unknown command: ${interaction.data.name}`);
     }
@@ -85,7 +89,7 @@ app.get("/register", async (c) => {
     console.error("Failed to register global command", text);
     return c.text(text);
   }
-})
+});
 
 app.post("/timerEvents/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
