@@ -149,9 +149,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   useEffect(() => {
     dispatchTimerLaunched(discordSdk.instanceId, Date.now()).then(() => {
       setInterval(tickTimerEvent, 10000);
-      tickTimerEvent();  
     });
-  }, [timerEvents, timerState]);
+  }, []);
 
   async function handleStart() {
     setBodyFilter("blur(20px)");
