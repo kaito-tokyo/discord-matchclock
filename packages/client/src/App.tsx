@@ -7,6 +7,7 @@ import {
   fetchTimerEvents,
   dispatchTimerLaunched,
   dispatchTimerStarted,
+  dispatchTimerStopped,
 } from "./TimerEvents.js";
 
 const startingCallText = "試合開始";
@@ -119,7 +120,7 @@ function App({ discordSdk }: AppProps) {
   }
 
   function handleStop() {
-    dispatchTimerStarted(discordSdk.instanceId, Date.now());
+    dispatchTimerStopped(discordSdk.instanceId, Date.now());
   }
 
   return (
