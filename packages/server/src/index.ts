@@ -44,7 +44,7 @@ app.post("/", async (c) => {
   }
 });
 
-app.post("/register", async (c) => {
+app.get("/register", async (c) => {
   const { DISCORD_APPLICATION_ID, DISCORD_TOKEN } = c.env;
   if (!DISCORD_APPLICATION_ID) {
     throw new Error("DISCORD_APPLICATION_ID is not set");
