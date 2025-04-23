@@ -17,6 +17,12 @@ const callTexts = [
   { millis: 0, text: "試合終了、速やかに試合を終了してください" },
 ];
 
+const eventCallTexts = {
+  TimerStartedEvent: {
+    text: "試合開始",
+  }
+}
+
 function say(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "ja-JP";
@@ -91,7 +97,8 @@ function App({ discordSdk }: AppProps) {
   function handleTimerEvent(event: TimerEvent) {
     switch (event.type) {
       case "TimerStartedEvent":
-        say("bbb");
+        say(eventCallTexts.TimerStartedEvent.text);
+        tick();
         break;
       default: {
         say("aaa")
