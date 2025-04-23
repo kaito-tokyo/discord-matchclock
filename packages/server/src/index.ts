@@ -13,29 +13,29 @@ interface DiscordInteraction {
 }
 
 app.post("/", async (c) => {
-  const rawBody = await c.req.arrayBuffer();
-  const signature = c.req.header("X-Signature-Ed25519");
-  if (!signature) {
-    throw new HTTPException(401, { message: "Missing signature!" });
-  }
-  console.error("Signature", signature);
-
-  const timestamp = c.req.header("X-Signature-Timestamp");
-  if (!timestamp) {
-    throw new HTTPException(401, { message: "Missing timestamp!" });
-  }
-  console.error("Timestamp", timestamp);
-
-  console.error("Body", await c.req.text());
-
   const { DISCORD_PUBLIC_KEY } = c.env;
   if (!DISCORD_PUBLIC_KEY) {
     throw new Error("DISCORD_PUBLIC_KEY is not set");
   }
 
-  const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
+  const signature = c.req.header("X-Signature-Ed25519");
+  if (!signature) {
+    return c.text("Missing signature!", 401);
+  }
+  console.error("Signature", signature);
+
+  const timestamp = c.req.header("X-Signature-Timestamp");
+  if (!timestamp) {
+    return c.text("Missing timestamp!", 401);
+  }
+  console.error("Timestamp", timestamp);
+
+  const rawBody = await c.req.arrayBuffer();
+  console.error("Body", await c.req.text());
+
+  const isValidRequest = await verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValidRequest) {
-    throw new HTTPException(401, { message: "Bad request signature!" });
+    return c.text("Bad request signature!", 401);
   }
 
   const interaction = await c.req.json();
@@ -44,7 +44,7 @@ app.post("/", async (c) => {
     c.header("Content-Type", "application/json; charset=utf-8");
     return c.body(JSON.stringify({ type: InteractionResponseType.PONG }));
   } else {
-    throw new HTTPException(400, { message: "Unknown interaction type!" });
+    return c.text("Unknown interaction type!", 400);
   }
 });
 
