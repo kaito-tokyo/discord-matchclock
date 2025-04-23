@@ -112,9 +112,9 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             ...oldTimerState,
             durationInMillis: oldTimerState.durationInMillis - elappsedMillis,
             tickTimerStateId: undefined,
-          };
+          };z
         });
-        say(eventCallTexts.TimerStartedEvent.text);
+        say(eventCallTexts.TimerStoppedEvent.text);
         break;
       case "TimerSetRemainingEvent":
         await setTimerState((oldTimerState) => {
