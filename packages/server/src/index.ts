@@ -5,9 +5,6 @@ import { verifyKey } from "discord-interactions";
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 
-import "./bot/register.js"
-import { sign } from "hono/jwt";
-
 const { DISCORD_PUBLIC_KEY } = process.env;
 
 if (DISCORD_PUBLIC_KEY === undefined) {
