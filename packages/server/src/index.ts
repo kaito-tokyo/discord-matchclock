@@ -42,8 +42,8 @@ app.post("/", async (c) => {
   if (interaction.type === InteractionType.PING) {
     return c.json({ type: InteractionResponseType.PONG });
   } if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-    switch (interaction.data.name) {
-      case MATCHCLOCK_COMMAND.name.toLowerCase():
+    switch (interaction.data.name.toLowerCase()) {
+      case "matchclock":
         console.error("Received matchclock command", JSON.stringify(await handleMatchclock(interaction)));
         return c.json(await handleMatchclock(interaction));
       default:
