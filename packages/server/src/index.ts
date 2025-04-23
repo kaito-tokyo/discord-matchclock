@@ -18,11 +18,15 @@ app.post("/", async (c) => {
   if (!signature) {
     throw new HTTPException(401, { message: "Missing signature!" });
   }
+  console.error("Signature", signature);
 
   const timestamp = c.req.header("X-Signature-Timestamp");
   if (!timestamp) {
     throw new HTTPException(401, { message: "Missing timestamp!" });
   }
+  console.error("Timestamp", timestamp);
+
+  console.log("Body", await c.req.text());
 
   const { DISCORD_PUBLIC_KEY } = c.env;
   if (!DISCORD_PUBLIC_KEY) {
