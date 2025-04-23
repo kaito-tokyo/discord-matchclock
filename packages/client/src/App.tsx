@@ -151,7 +151,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       setInterval(tickTimerEvent, 10000);
       tickTimerEvent();  
     });
-  }, []);
+  }, [timerState]);
 
   async function handleStart() {
     setBodyFilter("blur(20px)");
