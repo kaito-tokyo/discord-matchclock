@@ -89,16 +89,17 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
-        if (timerState.tickTimerStateId !== undefined) {
-          clearInterval(timerState.tickTimerStateId);
-        }
-        const tickTimerStateId = setInterval(tick, 1000);
-        setTimerState((oldTimerState) => ({
-          ...oldTimerState,
-          matchStart: event.dispatchedAt,
-          tickTimerStateId: tickTimerStateId,
-        }));
-        tick();
+        setTimerState((oldTimerState) => {
+          if (oldTimerState.tickTimerStateId !== undefined) {
+            clearInterval(oldTimerState.tickTimerStateId);
+          }
+          const tickTimerStateId = setInterval(tick, 1000);
+          return {
+            ...oldTimerState,
+            matchStart: event.dispatchedAt,
+            tickTimerStateId,
+          };
+        });
         break;
       case "TimerStoppedEvent":
         if (timerState.tickTimerStateId !== undefined) {
