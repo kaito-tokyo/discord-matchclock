@@ -57,7 +57,7 @@ export async function handleConfigureMatchclockSubmit(
     defaultDurationInMinutes
   }
 
-  configBucket.put(`${guild_id}.json`, JSON.stringify(config));
+  await configBucket.put(`${guild_id}.json`, JSON.stringify(config));
 
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
