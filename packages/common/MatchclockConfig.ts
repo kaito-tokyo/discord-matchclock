@@ -1,5 +1,5 @@
 export interface MatchclockConfig {
-  readonly durationInMinutes: number;
+  readonly defaultDurationInMinutes: number;
   readonly version: string;
 }
 
@@ -8,6 +8,6 @@ export const matchclockConfigVersionFields = {
 };
 
 export const defaultMatchclockConfig: MatchclockConfig = {
-  durationInMinutes: 25,
+  defaultDurationInMinutes: 25,
   ...matchclockConfigVersionFields,
 };

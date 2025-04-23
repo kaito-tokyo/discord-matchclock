@@ -37,8 +37,8 @@ interface AppProps {
 
 function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerState, setTimerState] = useState({
-    duration: matchclockConfig.durationInMinutes * 60000,
-    remainingMillis: matchclockConfig.durationInMinutes * 60000,
+    duration: matchclockConfig.defaultDurationInMinutes * 60000,
+    remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
     calledMillis: Infinity,
     isRunning: false,
     matchStart: 0,

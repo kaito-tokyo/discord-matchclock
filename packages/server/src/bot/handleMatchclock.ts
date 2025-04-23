@@ -54,7 +54,7 @@ export async function handleMatchclockCommand(
               custom_id: "default_duration",
               style: TextInputStyle.Short,
               label: "Default duration in minutes",
-              value: matchclockConfig.durationInMinutes.toString(),
+              value: matchclockConfig.defaultDurationInMinutes.toString(),
             },
           ],
         },

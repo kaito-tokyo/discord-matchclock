@@ -14,7 +14,6 @@ import "./index.css";
 const discordSdk = new DiscordSDK(import.meta.env.VITE_CLIENT_ID);
 
 async function setup() {
-  console.log(`/.proxy/config/${discordSdk.guildId}.json`);
   const response = await fetch(`/.proxy/config/${discordSdk.guildId}.json`);
 
   let matchclockConfig: MatchclockConfig;
