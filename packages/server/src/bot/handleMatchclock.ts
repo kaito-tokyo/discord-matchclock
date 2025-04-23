@@ -36,15 +36,34 @@ export async function handleMatchclockCommand(
 
 export async function handleConfigureMatchclockSubmit(
   interaction: APIModalSubmitInteraction,
+  configBucket: R2Bucket
 ): Promise<APIInteractionResponse> {
-  const durationInMinutes = Number(
+  const { guild_id } = interaction;
+  if (!guild_id) {
+    return {
+      type: InteractionResponseType.ChannelMessageWithSource,
+      data: {
+        content: "This command can only be used in a server.",
+        flags: MessageFlags.Ephemeral,
+      },
+    };
+  }
+
+  const defaultDurationInMinutes = Number(
     interaction.data.components[0].components[0].value,
   );
+
+  const config = {
+    defaultDurationInMinutes
+  }
+
+  configBucket.put(`${guild_id}.json`, JSON.stringify(config));
+
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
     data: {
       content: `Server-wide Matchclock configuration was updated!
-      Default duration: ${durationInMinutes} minutes`,
+      Default duration: ${defaultDurationInMinutes} minutes`,
     },
   };
 }
