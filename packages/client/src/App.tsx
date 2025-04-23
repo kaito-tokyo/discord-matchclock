@@ -42,6 +42,8 @@ interface AppProps {
 }
 
 function App({ discordSdk, matchclockConfig }: AppProps) {
+  const [bodyFilter, setBodyFilter] = useState("blur(0)");
+
   const [timerState, setTimerState] = useState({
     tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
     durationInMillis: matchclockConfig.defaultDurationInMinutes * 60000,
@@ -51,6 +53,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   });
 
   async function tick(now: number = Date.now()) {
+    await setBodyFilter("blur(0)");
     await setTimerState((oldTimerState) => {
       const { durationInMillis, offsetMillis } = oldTimerState;
 
@@ -150,16 +153,19 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }, []);
 
   async function handleStart() {
+    setBodyFilter("blur(20px)");
     await dispatchTimerStarted(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
   }
 
   async function handleStop() {
+    setBodyFilter("blur(20px)");
     await dispatchTimerStopped(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
   }
 
   async function handlePlus() {
+    setBodyFilter("blur(20px)");
     const dispatchedAt = Date.now();
     const elappsedMillis = dispatchedAt - timerState.offsetMillis;
     await dispatchTimerSetRemaining(
@@ -172,6 +178,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }
 
   async function handleMinus() {
+    setBodyFilter("blur(20px)");
     const dispatchedAt = Date.now();
     const elappsedMillis = dispatchedAt - timerState.offsetMillis;
     await dispatchTimerSetRemaining(
@@ -193,6 +200,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
+        filter: bodyFilter,
       }}
     >
       <section>
