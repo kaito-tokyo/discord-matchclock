@@ -58,7 +58,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         let calledMillis = Infinity;
         for (const { millis, text } of callTexts) {
           if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
-            say(text);
+            //say(text);
             calledMillis = millis;
             break;
           }
@@ -95,7 +95,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           }
           return {
             ...oldTimerState,
-            startFromMillis: event.dispatchedAt,
+            offsetMillis: event.dispatchedAt,
             tickTimerStateId: setInterval(tick, 1000),
           };
         });
