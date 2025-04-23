@@ -150,7 +150,7 @@ function App({ discordSdk }: AppProps) {
 
       <section>
         <button onClick={handleStart} disabled={timerState.isRunning}>スタート</button>
-        <button onClick={handleStart} disabled={timerState.isRunning}>ストップ</button>
+        <button onClick={handleStart} disabled={!timerState.isRunning}>ストップ</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
