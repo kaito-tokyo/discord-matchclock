@@ -4,7 +4,7 @@ import { InteractionResponseType, InteractionType, verifyKey } from "discord-int
 
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
-import { HTTPException } from "hono/http-exception";
+import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -41,8 +41,33 @@ app.post("/", async (c) => {
   const interaction = await c.req.json();
 
   if (interaction.type === InteractionType.PING) {
-    c.header("Content-Type", "application/json; charset=utf-8");
-    return c.body(JSON.stringify({ type: InteractionResponseType.PONG }));
+    const { DISCORD_APPLICATION_ID, DISCORD_TOKEN } = c.env;
+    if (!DISCORD_APPLICATION_ID) {
+      throw new Error("DISCORD_APPLICATION_ID is not set");
+    } else if (!DISCORD_TOKEN) {
+      throw new Error("DISCORD_TOKEN is not set");
+    }
+
+    const response = await fetch(
+      `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/commands`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bot ${DISCORD_TOKEN}`,
+        },
+        method: "PUT",
+        body: JSON.stringify([MATCHCLOCK_COMMAND]),
+      },
+    );
+
+    if (response.ok) {
+      console.log("Successfully registered global command");
+    } else {
+      console.error("Failed to register global command", response);
+      throw new Error("Failed to register global command");
+    }
+
+    return c.json({ type: InteractionResponseType.PONG });
   } else {
     return c.text("Unknown interaction type!", 400);
   }
