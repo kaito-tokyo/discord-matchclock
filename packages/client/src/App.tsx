@@ -27,7 +27,7 @@ const eventCallTexts = {
   },
 };
 
-async function say(text: string) {
+function say(text: string) {
   if (!speechSynthesis.speaking) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ja-JP";
@@ -114,8 +114,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             tickTimerStateId: undefined,
           };
         });
-        say(eventCallTexts.TimerStoppedEvent.text);
-        tick();
+        say(eventCallTexts.TimerStartedEvent.text);
     }
   }
 

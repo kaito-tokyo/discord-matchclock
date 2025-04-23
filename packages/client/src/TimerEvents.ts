@@ -10,6 +10,7 @@ export interface TimerStartedEvent {
 
 export interface TimerStoppedEvent {
   readonly dispatchedAt: number;
+  readonly durationInMillis: number
   readonly type: "TimerStoppedEvent";
 }
 
@@ -89,11 +90,13 @@ export async function dispatchTimerStarted(
 export async function dispatchTimerStopped(
   instanceId: string,
   dispatchedAt: number,
+  durationInMillis: number
 ): Promise<void> {
   dispatchTimerEvent(
     instanceId,
     {
       dispatchedAt,
+      durationInMillis,
       type: "TimerStoppedEvent",
     },
     dispatchedAt,
