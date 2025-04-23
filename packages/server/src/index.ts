@@ -52,6 +52,8 @@ app.get("/register", async (c) => {
     throw new Error("DISCORD_TOKEN is not set");
   }
 
+  const launchCommand = JSON.parse(c.env.DISCORD_LAUNCH_COMMAND_STRING);
+
   const response = await fetch(
     `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/commands`,
     {
@@ -60,7 +62,7 @@ app.get("/register", async (c) => {
         Authorization: `Bot ${DISCORD_TOKEN}`,
       },
       method: "PUT",
-      body: JSON.stringify([MATCHCLOCK_COMMAND]),
+      body: JSON.stringify([launchCommand, MATCHCLOCK_COMMAND]),
     },
   );
 
