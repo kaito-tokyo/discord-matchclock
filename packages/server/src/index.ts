@@ -4,7 +4,7 @@ import { InteractionResponseType, InteractionType, verifyKey } from "discord-int
 
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
-import { LAUNCH_COMMAND, MATCHCLOCK_COMMAND } from "./bot/commands.js";
+import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -60,7 +60,7 @@ app.get("/register", async (c) => {
         Authorization: `Bot ${DISCORD_TOKEN}`,
       },
       method: "PUT",
-      body: JSON.stringify([LAUNCH_COMMAND, MATCHCLOCK_COMMAND]),
+      body: JSON.stringify([MATCHCLOCK_COMMAND]),
     },
   );
 
