@@ -166,10 +166,16 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <button onClick={handleStart} disabled={timerState.tickTimerStateId !== undefined}>
+        <button
+          onClick={handleStart}
+          disabled={timerState.tickTimerStateId !== undefined}
+        >
           スタート
         </button>
-        <button onClick={handleStop} disabled={timerState.tickTimerStateId === undefined}>
+        <button
+          onClick={handleStop}
+          disabled={timerState.tickTimerStateId === undefined}
+        >
           ストップ
         </button>
       </section>

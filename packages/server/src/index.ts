@@ -3,6 +3,8 @@ import { Hono } from "hono";
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 
+import "./bot/register.js"
+
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.post("/timerEvents/:instanceId", async (c) => {
