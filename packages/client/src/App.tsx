@@ -41,14 +41,14 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
     calledMillis: Infinity,
     isRunning: false,
-    matchStart: 0,
+    startFromMillis: 0,
     tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
   });
 
   function tick(timestamp: number = Date.now()) {
     setTimerState(
-      ({ duration, calledMillis, isRunning, matchStart, tickTimerStateId }) => {
-        const newRemainingMillis = duration - timestamp + matchStart;
+      ({ duration, calledMillis, isRunning, startFromMillis, tickTimerStateId }) => {
+        const newRemainingMillis = duration - timestamp + startFromMillis;
 
         for (const { millis, text } of callTexts) {
           if (millis < calledMillis && newRemainingMillis <= millis) {
@@ -64,7 +64,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             remainingMillis: 0,
             calledMillis,
             isRunning: false,
-            matchStart,
+            startFromMillis,
             tickTimerStateId,
           };
         }
@@ -74,7 +74,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           remainingMillis: newRemainingMillis,
           calledMillis,
           isRunning,
-          matchStart,
+          startFromMillis,
           tickTimerStateId,
         };
 
@@ -96,7 +96,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           const tickTimerStateId = setInterval(tick, 1000);
           return {
             ...oldTimerState,
-            matchStart: event.dispatchedAt,
+            duration: oldTimerState.duration - event.dispatchedAt + oldTimerState.startFromMillis,
+            startFromMillis: event.dispatchedAt,
             tickTimerStateId,
           };
         });
