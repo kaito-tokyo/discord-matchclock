@@ -42,18 +42,6 @@ function App({ discordSdk }: AppProps) {
     matchStart: 0,
   });
 
-  function startTimer(timestamp: number) {
-    setTimerState(({ duration, remainingMillis, calledMillis }) => ({
-      duration,
-      remainingMillis,
-      calledMillis,
-      isRunning: true,
-      matchStart: timestamp,
-    }));
-    say(startingCallText);
-    setTimeout(tick, 1000, Date.now());
-  }
-
   function tick(timestamp: number = Date.now()) {
     setTimerState(({ duration, calledMillis, isRunning, matchStart }) => {
       const newRemainingMillis = duration - timestamp + matchStart;
@@ -155,7 +143,7 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <button onClick={handleStart} disabled={!timerState.isRunning}>スタート</button>
+        <button onClick={handleStart} disabled={timerState.isRunning}>スタート</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
