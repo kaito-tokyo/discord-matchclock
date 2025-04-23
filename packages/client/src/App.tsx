@@ -98,7 +98,7 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
-        tick();
+        tick(Date.now());
         break;
       default: {
         say("aaa")
