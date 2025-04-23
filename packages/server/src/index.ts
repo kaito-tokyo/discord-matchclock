@@ -15,12 +15,14 @@ app.post("/", async (c) => {
   const rawBody = await c.req.arrayBuffer();
   const signature = c.req.header("X-Signature-Ed25519");
   if (!signature) {
-    throw new Error("Missing signature!");
+    console.error("Missing signature!");
+    return c.status(401);
   }
 
   const timestamp = c.req.header("X-Signature-Timestamp");
   if (!timestamp) {
-    throw new Error("Missing timestamp!");
+    console.error("Missing timestamp!");
+    return c.status(401);
   }
 
   const { DISCORD_PUBLIC_KEY } = c.env;
@@ -30,7 +32,8 @@ app.post("/", async (c) => {
 
   const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValidRequest) {
-    return c.text("Bad request signature!", 401);
+    console.error("Bad request signature!");
+    return c.status(401);
   }
 
   const interaction = await c.req.json();
