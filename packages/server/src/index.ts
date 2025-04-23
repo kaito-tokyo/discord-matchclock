@@ -57,7 +57,9 @@ app.post("/", async (c) => {
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     if (interaction.data.custom_id === "configure_matchclock") {
-      return c.json(await handleConfigureMatchclockSubmit(interaction, c.env.CONFIG_BUCKET));
+      return c.json(
+        await handleConfigureMatchclockSubmit(interaction, c.env.CONFIG_BUCKET),
+      );
     } else {
       throw new Error(`Unknown modal: ${interaction.data.custom_id}`);
     }

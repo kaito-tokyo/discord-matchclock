@@ -36,7 +36,7 @@ export async function handleMatchclockCommand(
 
 export async function handleConfigureMatchclockSubmit(
   interaction: APIModalSubmitInteraction,
-  configBucket: R2Bucket
+  configBucket: R2Bucket,
 ): Promise<APIInteractionResponse> {
   const { guild_id } = interaction;
   if (!guild_id) {
@@ -54,8 +54,8 @@ export async function handleConfigureMatchclockSubmit(
   );
 
   const config = {
-    defaultDurationInMinutes
-  }
+    defaultDurationInMinutes,
+  };
 
   await configBucket.put(`${guild_id}.json`, JSON.stringify(config));
 
