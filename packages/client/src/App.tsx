@@ -20,8 +20,8 @@ const callTexts = [
 const eventCallTexts = {
   TimerStartedEvent: {
     text: "試合開始",
-  }
-}
+  },
+};
 
 function say(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
@@ -76,10 +76,6 @@ function App({ discordSdk }: AppProps) {
         };
       }
 
-      if (isRunning) {
-        setTimeout(tick, 1000, Date.now());
-      }
-
       const nextPayload = {
         duration,
         remainingMillis: newRemainingMillis,
@@ -104,10 +100,6 @@ function App({ discordSdk }: AppProps) {
           matchStart: event.dispatchedAt,
         }));
         setInterval(tick, 1000);
-        break;
-      default: {
-        say("aaa")
-      }
     }
   }
 
