@@ -1,6 +1,7 @@
 import { MATCHCLOCK_COMMAND } from "./commands";
 
-const { DISCORD_APPLICATION_ID, DISCORD_TOKEN } = process.env;
+export interface Env {
+}
 
 if (DISCORD_APPLICATION_ID === undefined) {
   throw new Error("DISCORD_APPLICATION_ID is not set");
