@@ -117,10 +117,12 @@ function App({ discordSdk }: AppProps) {
 
   function handleStart() {
     dispatchTimerStarted(discordSdk.instanceId, Date.now());
+    tickTimerEvent();
   }
 
   function handleStop() {
     dispatchTimerStopped(discordSdk.instanceId, Date.now());
+    tickTimerEvent();
   }
 
   return (
