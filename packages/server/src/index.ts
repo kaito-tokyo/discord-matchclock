@@ -1,16 +1,16 @@
 import { Hono } from "hono";
 
-import { verifyKey } from "discord-interactions";
-
-import { Bindings } from "./Bindings.js";
-import { EventRecorder } from "./EventRecorder.js";
-import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
-import { handleMatchclock } from "./bot/handleMatchclock.js";
 import {
   APIInteraction,
   InteractionResponseType,
   InteractionType,
 } from "discord-api-types/v10";
+import { verifyKey } from "discord-interactions";
+
+import { Bindings } from "./Bindings.js";
+import { EventRecorder } from "./EventRecorder.js";
+import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
+import { handleMatchclockCommand } from "./bot/handleMatchclock.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -47,13 +47,18 @@ app.post("/", async (c) => {
 
   if (interaction.type === InteractionType.Ping) {
     return c.json({ type: InteractionResponseType.Pong });
-  }
-  if (interaction.type === InteractionType.ApplicationCommand) {
-    switch (interaction.data.name.toLowerCase()) {
-      case "matchclock":
-        return c.json(await handleMatchclock(interaction));
-      default:
-        throw new Error(`Unknown command: ${interaction.data.name}`);
+  } else if (interaction.type === InteractionType.ApplicationCommand) {
+    if (interaction.data.name === MATCHCLOCK_COMMAND.name) {
+      return c.json(await handleMatchclockCommand(interaction));
+    } else {
+      throw new Error(`Unknown command: ${interaction.data.name}`);
+    }
+  } else if (interaction.type === InteractionType.ModalSubmit) {
+    if (interaction.data.custom_id === "configure_matchclock") {
+      const response = await handleMatchclock(interaction);
+      return c.json(response);
+    } else {
+      throw new Error(`Unknown modal: ${interaction.data.custom_id}`);
     }
   } else {
     return c.text("Unknown interaction type!", 400);
