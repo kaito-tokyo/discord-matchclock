@@ -27,10 +27,12 @@ const eventCallTexts = {
   },
 };
 
-function say(text: string) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "ja-JP";
-  speechSynthesis.speak(utterance);
+async function say(text: string) {
+  if (!speechSynthesis.speaking) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ja-JP";
+    speechSynthesis.speak(utterance);
+  }
 }
 
 interface AppProps {
@@ -98,6 +100,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             tickTimerStateId: setInterval(tick, 1000),
           };
         });
+        say(eventCallTexts.TimerStartedEvent.text);
         break;
       case "TimerStoppedEvent":
         setTimerState((oldTimerState) => {
@@ -111,6 +114,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             tickTimerStateId: undefined,
           };
         });
+        say(eventCallTexts.TimerStoppedEvent.text);
         tick();
     }
   }
