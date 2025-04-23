@@ -3,12 +3,12 @@ export interface TimerLaunchedEvent {
   readonly type: "TimerLaunchedEvent";
 }
 
-export interface TimerStartEvent {
+export interface TimerStartedEvent {
   readonly dispatchedAt: number;
-  readonly type: "TimerStartEvent";
+  readonly type: "TimerStartedEvent";
 }
 
-export type TimerEvent = TimerLaunchedEvent | TimerStartEvent;
+export type TimerEvent = TimerLaunchedEvent | TimerStartedEvent;
 
 export async function fetchTimerEvents(
   instanceId: string,

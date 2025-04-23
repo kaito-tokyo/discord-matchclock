@@ -86,36 +86,32 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
-  function handlePlus() {
-    setTimerState((state) => {
-      return {
-        ...state,
-        duration: state.duration + 60000,
-        remainingMillis: state.remainingMillis + 60000,
-      };
-    });
-  }
-
-  function handleMinus() {
-    setTimerState((state) => {
-      return {
-        ...state,
-        duration: state.duration - 60000,
-        remainingMillis: state.remainingMillis - 60000,
-      };
-    });
-  }
-
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
+
+  function handleTimerEvent(event: TimerEvent) {
+    switch (event.type) {
+      case "TimerStartedEvent":
+        say("bbb");
+        break;
+      default: {
+        say("aaa")
+      }
+    }
+  }
 
   useEffect(() => {
     setInterval(async () => {
       const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
-      setTimerEvents((oldTimerEvents) =>
-        oldTimerEvents.length === newTimerEvents.length
-          ? oldTimerEvents
-          : newTimerEvents,
-      );
+      setTimerEvents((oldTimerEvents) => {
+        if (newTimerEvents.length === oldTimerEvents.length) {
+          return oldTimerEvents;
+        } else {
+          for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
+            handleTimerEvent(newTimerEvents[i]);
+          }
+          return newTimerEvents;
+        }
+      });
     }, 1000);
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
@@ -123,13 +119,6 @@ function App({ discordSdk }: AppProps) {
   function handleStart() {
     dispatchTimerStarted(discordSdk.instanceId, Date.now());
   }
-
-  useEffect(() => {
-    if (timerEvents.length === 0) {
-      return;
-    }
-    startTimer(Date.now());
-  }, [timerEvents]);
 
   return (
     <main
@@ -158,18 +147,7 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <h1>二人で同時にスタートを押してください</h1>
         <button onClick={handleStart}>スタート</button>
-      </section>
-
-      <section>
-        <h1>デバッグ用（使う時は二人同時に押す）</h1>
-        <button onClick={handleMinus}>-1分</button>
-        <button onClick={handlePlus}>+1分</button>
-      </section>
-
-      <section>
-        <h1>{discordSdk.instanceId}</h1>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
