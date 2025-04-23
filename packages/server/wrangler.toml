@@ -5,7 +5,7 @@ main = "src/index.ts"
 [vars]
 DISCORD_APPLICATION_ID = "1364582702480756777"
 DISCORD_PUBLIC_KEY = "f3460a5499d96a369fe3a509d521ae88f204545b538178521056057700b928c4"
-DISCORD_LAUNCH_COMMAND = """
+DISCORD_LAUNCH_COMMAND_STRING = """
 {"id":"1364584062378967082","application_id":"1364582702480756777","version":"1364584062378967083","default_member_permissions":null,"type":4,"name":"launch","description":"Launch an activity","dm_permission":true,"contexts":[0,1,2],"integration_types":[0,1],"nsfw":false,"handler":2}
 """
 
