@@ -95,7 +95,7 @@ export async function dispatchTimerStarted(
 
 export async function dispatchTimerStopped(
   instanceId: string,
-  dispatchedAt: number
+  dispatchedAt: number,
 ): Promise<void> {
   dispatchTimerEvent(
     instanceId,
@@ -110,7 +110,7 @@ export async function dispatchTimerStopped(
 export async function dispatchTimerSetRemaining(
   instanceId: string,
   dispatchedAt: number,
-  remainingMillis: number
+  remainingMillis: number,
 ): Promise<void> {
   dispatchTimerEvent(
     instanceId,

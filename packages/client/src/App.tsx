@@ -47,43 +47,41 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     durationInMillis: matchclockConfig.defaultDurationInMinutes * 60000,
     offsetMillis: 0,
     calledMillis: Infinity,
-    remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000
+    remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
   });
 
   function tick(now: number = Date.now()) {
-    setTimerState(
-      (oldTimerState) => {
-        const { durationInMillis, offsetMillis } = oldTimerState;
+    setTimerState((oldTimerState) => {
+      const { durationInMillis, offsetMillis } = oldTimerState;
 
-        const elappsedMillis = now - offsetMillis;
-        const remainingMillis = durationInMillis - elappsedMillis;
+      const elappsedMillis = now - offsetMillis;
+      const remainingMillis = durationInMillis - elappsedMillis;
 
-        let calledMillis = Infinity;
-        for (const { millis, text } of callTexts) {
-          if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
-            //say(text);
-            calledMillis = millis;
-            break;
-          }
+      let calledMillis = Infinity;
+      for (const { millis, text } of callTexts) {
+        if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
+          //say(text);
+          calledMillis = millis;
+          break;
         }
+      }
 
-        if (remainingMillis < 0) {
-          return {
-            ...oldTimerState,
-            remainingMillis: 0,
-            calledMillis,
-            isRunning: false,
-            offsetMillis: now
-          };
-        }
-
+      if (remainingMillis < 0) {
         return {
           ...oldTimerState,
-          remainingMillis,
+          remainingMillis: 0,
           calledMillis,
+          isRunning: false,
+          offsetMillis: now,
         };
-      },
-    );
+      }
+
+      return {
+        ...oldTimerState,
+        remainingMillis,
+        calledMillis,
+      };
+    });
   }
 
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
@@ -108,7 +106,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
-          const elappsedMillis = event.dispatchedAt - oldTimerState.offsetMillis;
+          const elappsedMillis =
+            event.dispatchedAt - oldTimerState.offsetMillis;
           return {
             ...oldTimerState,
             durationInMillis: oldTimerState.durationInMillis - elappsedMillis,
@@ -119,7 +118,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         break;
       case "TimerSetRemainingEvent":
         setTimerState((oldTimerState) => {
-          const elappsedMillis = event.dispatchedAt - oldTimerState.offsetMillis;
+          const elappsedMillis =
+            event.dispatchedAt - oldTimerState.offsetMillis;
           return {
             ...oldTimerState,
             durationInMillis: event.remainingMillis - elappsedMillis,
@@ -158,13 +158,24 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     tickTimerEvent();
   }
 
-  function handleMinus() {
+  function handlePlus() {
+    const dispatchedAt = Date.now();
+    const elappsedMillis = dispatchedAt - timerState.offsetMillis;
     dispatchTimerSetRemaining(
       discordSdk.instanceId,
-      Date.now(),
-      timerState.remainingMillis - 60000
+      dispatchedAt,
+      timerState.remainingMillis - elappsedMillis + 60000,
     );
-    tickTimerEvent();
+  }
+
+  function handleMinus() {
+    const dispatchedAt = Date.now();
+    const elappsedMillis = dispatchedAt - timerState.offsetMillis;
+    dispatchTimerSetRemaining(
+      discordSdk.instanceId,
+      dispatchedAt,
+      timerState.remainingMillis - elappsedMillis - 60000,
+    );
   }
 
   return (
@@ -206,11 +217,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         >
           ストップ
         </button>
-        <button
-          onClick={handleMinus}
-        >
-          -1分
-        </button>
+        <button onClick={handlePlus}>+1分</button>
+        <button onClick={handleMinus}>-1分</button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
