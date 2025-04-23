@@ -66,7 +66,7 @@ export async function dispatchTimerStarted(
     instanceId,
     {
       dispatchedAt,
-      type: "TimerLaunchedEvent",
+      type: "TimerStartedEvent",
     },
     dispatchedAt,
   );
