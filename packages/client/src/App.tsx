@@ -20,7 +20,10 @@ const callTexts = [
 
 const eventCallTexts = {
   TimerStartedEvent: {
-    text: "試合開始",
+    text: "タイマースタート",
+  },
+  TimerStoppedEvent: {
+    text: "タイマーストップ",
   },
 };
 
@@ -37,48 +40,45 @@ interface AppProps {
 
 function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerState, setTimerState] = useState({
-    duration: matchclockConfig.defaultDurationInMinutes * 60000,
     remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
     calledMillis: Infinity,
     isRunning: false,
-    startFromMillis: 0,
+    offsetMillis: 0,
     tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
   });
 
-  function tick(timestamp: number = Date.now()) {
+  function tick(now: number = Date.now()) {
     setTimerState(
-      ({ duration, calledMillis, isRunning, startFromMillis, tickTimerStateId }) => {
-        const newRemainingMillis = duration - timestamp + startFromMillis;
+      (oldTimerState) => {
+        const { offsetMillis } = oldTimerState;
 
+        const elappsedMillis = now - offsetMillis;
+        const remainingMillis = oldTimerState.remainingMillis - elappsedMillis;
+
+        let calledMillis = Infinity;
         for (const { millis, text } of callTexts) {
-          if (millis < calledMillis && newRemainingMillis <= millis) {
+          if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
             say(text);
             calledMillis = millis;
             break;
           }
         }
 
-        if (newRemainingMillis < 0) {
+        if (remainingMillis < 0) {
           return {
-            duration,
+            ...oldTimerState,
             remainingMillis: 0,
             calledMillis,
             isRunning: false,
-            startFromMillis,
-            tickTimerStateId,
+            offsetMillis: now
           };
         }
 
-        const nextPayload = {
-          duration,
-          remainingMillis: newRemainingMillis,
+        return {
+          ...oldTimerState,
+          remainingMillis,
           calledMillis,
-          isRunning,
-          startFromMillis,
-          tickTimerStateId,
         };
-
-        return nextPayload;
       },
     );
   }
@@ -93,16 +93,15 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
-          const tickTimerStateId = setInterval(tick, 1000);
           return {
             ...oldTimerState,
-            duration: oldTimerState.duration - event.dispatchedAt + oldTimerState.startFromMillis,
             startFromMillis: event.dispatchedAt,
-            tickTimerStateId,
+            tickTimerStateId: setInterval(tick, 1000),
           };
         });
         break;
       case "TimerStoppedEvent":
+        say(eventCallTexts.TimerStoppedEvent.text);
         setTimerState((oldTimerState) => {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
