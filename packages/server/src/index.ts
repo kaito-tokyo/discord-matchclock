@@ -1,11 +1,15 @@
 import { Hono } from "hono";
 
-import { verifyKey } from "discord-interactions";
+import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+interface DiscordInteraction {
+  readonly type: InteractionType;
+}
 
 app.post("/", async (c) => {
   const rawBody = await c.req.arrayBuffer();
@@ -14,6 +18,14 @@ app.post("/", async (c) => {
   const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValidRequest) {
     return c.text("Bad request signature!", 401);
+  }
+
+  const interaction = await c.req.json();
+
+  if (interaction.type === InteractionType.PING) {
+    return c.json({ type: InteractionResponseType.PONG });
+  } else {
+    throw new Error("Unknown interaction type");
   }
 });
 
