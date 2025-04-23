@@ -54,7 +54,7 @@ function App({ discordSdk }: AppProps) {
     setTimeout(tick, 1000, Date.now());
   }
 
-  function tick(timestamp: number) {
+  function tick(timestamp: number = Date.now()) {
     setTimerState(({ duration, calledMillis, isRunning, matchStart }) => {
       const newRemainingMillis = duration - timestamp + matchStart;
 
@@ -98,7 +98,7 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
-        tick(Date.now());
+        setTimeout(tick, 1000);
         break;
       default: {
         say("aaa")
