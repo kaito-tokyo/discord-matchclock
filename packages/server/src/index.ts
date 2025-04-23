@@ -4,6 +4,7 @@ import { InteractionResponseType, InteractionType, verifyKey } from "discord-int
 
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
+import { HTTPException } from "hono/http-exception";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -15,14 +16,12 @@ app.post("/", async (c) => {
   const rawBody = await c.req.arrayBuffer();
   const signature = c.req.header("X-Signature-Ed25519");
   if (!signature) {
-    console.error("Missing signature!");
-    return c.status(401);
+    throw new HTTPException(401, { message: "Missing signature!" });
   }
 
   const timestamp = c.req.header("X-Signature-Timestamp");
   if (!timestamp) {
-    console.error("Missing timestamp!");
-    return c.status(401);
+    throw new HTTPException(401, { message: "Missing timestamp!" });
   }
 
   const { DISCORD_PUBLIC_KEY } = c.env;
@@ -32,8 +31,7 @@ app.post("/", async (c) => {
 
   const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValidRequest) {
-    console.error("Bad request signature!");
-    return c.status(401);
+    throw new HTTPException(401, { message: "Bad request signature!" });
   }
 
   const interaction = await c.req.json();
@@ -41,7 +39,7 @@ app.post("/", async (c) => {
   if (interaction.type === InteractionType.PING) {
     return c.json({ type: InteractionResponseType.PONG });
   } else {
-    throw new Error("Unknown interaction type");
+    throw new HTTPException(400, { message: "Unknown interaction type!" });
   }
 });
 
