@@ -98,10 +98,8 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
-        setTimerState(({ duration, remainingMillis, calledMillis }) => ({
-          duration,
-          remainingMillis,
-          calledMillis,
+        setTimerState((oldTimerState) => ({
+          ...oldTimerState,
           isRunning: true,
           matchStart: event.dispatchedAt,
         }));
