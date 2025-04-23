@@ -8,9 +8,34 @@ import {
   TextInputStyle,
 } from "discord-api-types/v10";
 
+import { defaultMatchclockConfig, matchclockConfigVersionFields, type MatchclockConfig } from "discord-matchclock-common/MatchclockConfig.js";
+
 export async function handleMatchclockCommand(
   interaction: APIApplicationCommandInteraction,
+  configBucket: R2Bucket,
 ): Promise<APIInteractionResponse> {
+  const { guild_id } = interaction;
+  if (!guild_id) {
+    return {
+      type: InteractionResponseType.ChannelMessageWithSource,
+      data: {
+        content: "This command can only be used in a server.",
+        flags: MessageFlags.Ephemeral,
+      },
+    };
+  }
+
+  let matchclockConfig = defaultMatchclockConfig;
+
+  const response = await configBucket.get(`${guild_id}.json`);
+  if (response) {
+    matchclockConfig = {
+      ...matchclockConfig,
+      ...await response.json(),
+      ...matchclockConfigVersionFields,
+    }
+  }
+
   return {
     type: InteractionResponseType.Modal,
     data: {
@@ -25,7 +50,7 @@ export async function handleMatchclockCommand(
               custom_id: "default_duration",
               style: TextInputStyle.Short,
               label: "Default duration in minutes",
-              value: "25",
+              value: matchclockConfig.durationInMinutes.toString(),
             },
           ],
         },
@@ -53,11 +78,12 @@ export async function handleConfigureMatchclockSubmit(
     interaction.data.components[0].components[0].value,
   );
 
-  const config = {
+  const matchclockConfig = {
     defaultDurationInMinutes,
+    ...matchclockConfigVersionFields,
   };
 
-  await configBucket.put(`${guild_id}.json`, JSON.stringify(config));
+  await configBucket.put(`${guild_id}.json`, JSON.stringify(matchclockConfig));
 
   return {
     type: InteractionResponseType.ChannelMessageWithSource,
