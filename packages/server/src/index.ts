@@ -41,8 +41,8 @@ app.post("/", async (c) => {
   const interaction = await c.req.json();
 
   if (interaction.type === InteractionType.PING) {
-    c.res.headers.set("Content-Type", "application/json; charset=utf-8");
-    return c.json({ type: InteractionResponseType.PONG });
+    c.header("Content-Type", "application/json; charset=utf-8");
+    return c.body(JSON.stringify({ type: InteractionResponseType.PONG }));
   } else {
     throw new HTTPException(400, { message: "Unknown interaction type!" });
   }
