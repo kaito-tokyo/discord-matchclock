@@ -20,7 +20,7 @@ app.post("/", async (c) => {
 
   const timestamp = c.req.header("X-Signature-Timestamp");
   if (!timestamp) {
-    throw
+    throw new Error("Missing timestamp!");
   }
 
   const { DISCORD_PUBLIC_KEY } = c.env;
