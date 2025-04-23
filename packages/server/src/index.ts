@@ -15,6 +15,12 @@ app.post("/", async (c) => {
   const rawBody = await c.req.arrayBuffer();
   const signature = c.req.header("X-Signature-Ed25519") ?? "";
   const timestamp = c.req.header("X-Signature-Timestamp") ?? "";
+
+  const { DISCORD_PUBLIC_KEY } = c.env;
+  if (!DISCORD_PUBLIC_KEY) {
+    throw new Error("DISCORD_PUBLIC_KEY is not set");
+  } 
+
   const isValidRequest = verifyKey(rawBody, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValidRequest) {
     return c.text("Bad request signature!", 401);
