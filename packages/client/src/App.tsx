@@ -91,6 +91,7 @@ function App({ discordSdk }: AppProps) {
         }));
         setInterval(tick, 1000);
         tick();
+        break;
       case "TimerStoppedEvent":
         setTimerState((oldTimerState) => ({
           ...oldTimerState,
