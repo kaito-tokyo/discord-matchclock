@@ -8,7 +8,11 @@ import {
   TextInputStyle,
 } from "discord-api-types/v10";
 
-import { defaultMatchclockConfig, matchclockConfigVersionFields, type MatchclockConfig } from "discord-matchclock-common/MatchclockConfig.js";
+import {
+  defaultMatchclockConfig,
+  matchclockConfigVersionFields,
+  type MatchclockConfig,
+} from "discord-matchclock-common/MatchclockConfig.js";
 
 export async function handleMatchclockCommand(
   interaction: APIApplicationCommandInteraction,
@@ -31,9 +35,9 @@ export async function handleMatchclockCommand(
   if (response) {
     matchclockConfig = {
       ...matchclockConfig,
-      ...await response.json(),
+      ...(await response.json()),
       ...matchclockConfigVersionFields,
-    }
+    };
   }
 
   return {
@@ -79,11 +83,17 @@ export async function handleConfigureMatchclockSubmit(
   );
 
   const matchclockConfig = {
+    ...defaultMatchclockConfig,
     defaultDurationInMinutes,
     ...matchclockConfigVersionFields,
   };
 
-  await configBucket.put(`${guild_id}.json`, JSON.stringify(matchclockConfig));
+  await configBucket.put(`${guild_id}.json`, JSON.stringify(matchclockConfig), {
+    httpMetadata: {
+      contentType: "application/json",
+      cacheControl: "private, no-cache, no-store",
+    },
+  });
 
   return {
     type: InteractionResponseType.ChannelMessageWithSource,

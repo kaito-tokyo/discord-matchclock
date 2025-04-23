@@ -51,7 +51,9 @@ app.post("/", async (c) => {
     return c.json({ type: InteractionResponseType.Pong });
   } else if (interaction.type === InteractionType.ApplicationCommand) {
     if (interaction.data.name === MATCHCLOCK_COMMAND.name) {
-      return c.json(await handleMatchclockCommand(interaction, c.env.CONFIG_BUCKET));
+      return c.json(
+        await handleMatchclockCommand(interaction, c.env.CONFIG_BUCKET),
+      );
     } else {
       throw new Error(`Unknown command: ${interaction.data.name}`);
     }

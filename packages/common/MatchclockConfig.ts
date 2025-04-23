@@ -4,8 +4,8 @@ export interface MatchclockConfig {
 }
 
 export const matchclockConfigVersionFields = {
-  version: "2025042401"
-}
+  version: "2025042401",
+};
 
 export const defaultMatchclockConfig: MatchclockConfig = {
   durationInMinutes: 25,
