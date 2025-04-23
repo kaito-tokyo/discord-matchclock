@@ -156,11 +156,13 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     setBodyFilter("blur(20px)");
     await dispatchTimerStarted(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
+    await tick();
   }
 
   async function handleStop() {
     await dispatchTimerStopped(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
+    await tick();
   }
 
   async function handlePlus() {
