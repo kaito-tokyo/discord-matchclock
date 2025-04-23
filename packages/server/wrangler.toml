@@ -19,3 +19,7 @@ class_name = "EventRecorder"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = [ "EventRecorder" ]
+
+[[r2_buckets]]
+binding = "CONFIG_BUCKET"
+bucket_name = "config-discord-matchclock-kaito-tokyo"
