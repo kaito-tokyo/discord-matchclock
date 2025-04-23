@@ -5,12 +5,6 @@ import { verifyKey } from "discord-interactions";
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 
-const { DISCORD_PUBLIC_KEY } = process.env;
-
-if (DISCORD_PUBLIC_KEY === undefined) {
-  throw new Error("DISCORD_PUBLIC_KEY is not set");
-}
-
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.post("/", async (c) => {
