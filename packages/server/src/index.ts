@@ -46,7 +46,6 @@ app.post("/", async (c) => {
   }
 
   const interaction: APIInteraction = await c.req.json();
-  console.error("Received interaction", JSON.stringify(interaction));
 
   if (interaction.type === InteractionType.Ping) {
     return c.json({ type: InteractionResponseType.Pong });
@@ -58,7 +57,7 @@ app.post("/", async (c) => {
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     if (interaction.data.custom_id === "configure_matchclock") {
-      return c.json(await handleConfigureMatchclockSubmit(interaction));
+      return c.json(await handleConfigureMatchclockSubmit(interaction, c.env.CONFIG_BUCKET));
     } else {
       throw new Error(`Unknown modal: ${interaction.data.custom_id}`);
     }
