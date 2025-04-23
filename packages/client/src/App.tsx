@@ -206,6 +206,11 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         >
           ストップ
         </button>
+        <button
+          onClick={handleMinus}
+        >
+          -1分
+        </button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
