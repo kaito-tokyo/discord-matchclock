@@ -99,6 +99,7 @@ function App({ discordSdk }: AppProps) {
           isRunning: true,
           matchStart: event.dispatchedAt,
         }));
+        tick();
         setInterval(tick, 1000);
     }
   }
