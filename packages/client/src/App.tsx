@@ -50,8 +50,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     remainingMillis: matchclockConfig.defaultDurationInMinutes * 60000,
   });
 
-  function tick(now: number = Date.now()) {
-    setTimerState((oldTimerState) => {
+  async function tick(now: number = Date.now()) {
+    await setTimerState((oldTimerState) => {
       const { durationInMillis, offsetMillis } = oldTimerState;
 
       const elappsedMillis = now - offsetMillis;
@@ -86,10 +86,10 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
 
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
-  function handleTimerEvent(event: TimerEvent) {
+  async function handleTimerEvent(event: TimerEvent) {
     switch (event.type) {
       case "TimerStartedEvent":
-        setTimerState((oldTimerState) => {
+        await setTimerState((oldTimerState) => {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
@@ -102,7 +102,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         say(eventCallTexts.TimerStartedEvent.text);
         break;
       case "TimerStoppedEvent":
-        setTimerState((oldTimerState) => {
+        await setTimerState((oldTimerState) => {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
@@ -117,7 +117,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         say(eventCallTexts.TimerStartedEvent.text);
         break;
       case "TimerSetRemainingEvent":
-        setTimerState((oldTimerState) => {
+        await setTimerState((oldTimerState) => {
           const elappsedMillis =
             event.dispatchedAt - oldTimerState.offsetMillis;
           return {
@@ -131,7 +131,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
 
   async function tickTimerEvent() {
     const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
-    setTimerEvents((oldTimerEvents) => {
+    await setTimerEvents((oldTimerEvents) => {
       if (newTimerEvents.length === oldTimerEvents.length) {
         return oldTimerEvents;
       } else {
@@ -149,40 +149,42 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
 
-  function handleStart() {
-    dispatchTimerStarted(discordSdk.instanceId, Date.now());
-    tickTimerEvent();
+  async function handleStart() {
+    await dispatchTimerStarted(discordSdk.instanceId, Date.now());
+    await tickTimerEvent();
   }
 
-  function handleStop() {
-    dispatchTimerStopped(discordSdk.instanceId, Date.now());
-    tickTimerEvent();
+  async function handleStop() {
+    await dispatchTimerStopped(discordSdk.instanceId, Date.now());
+    await tickTimerEvent();
   }
 
-  function handlePlus() {
+  async function handlePlus() {
     const dispatchedAt = Date.now();
     const elappsedMillis = dispatchedAt - timerState.offsetMillis;
-    dispatchTimerSetRemaining(
+    await dispatchTimerSetRemaining(
       discordSdk.instanceId,
       dispatchedAt,
       timerState.remainingMillis - elappsedMillis + 60000,
     );
-    tick();
+    await tickTimerEvent();
+    await tick();
   }
 
-  function handleMinus() {
+  async function handleMinus() {
     const dispatchedAt = Date.now();
     const elappsedMillis = dispatchedAt - timerState.offsetMillis;
-    dispatchTimerSetRemaining(
+    await dispatchTimerSetRemaining(
       discordSdk.instanceId,
       dispatchedAt,
       timerState.remainingMillis - elappsedMillis - 60000,
     );
-    tick();
+    await tickTimerEvent();
+    await tick();
   }
 
-  function handleSync() {
-    tickTimerEvent();
+  async function handleSync() {
+    await tickTimerEvent();
   }
 
   return (
