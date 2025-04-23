@@ -27,6 +27,8 @@ async function setup() {
     matchclockConfig = defaultMatchclockConfig;
   }
 
+  console.log(matchclockConfig);
+
   return {
     matchclockConfig,
   };
