@@ -13,7 +13,10 @@ export interface TimerStoppedEvent {
   readonly type: "TimerStoppedEvent";
 }
 
-export type TimerEvent = TimerLaunchedEvent | TimerStartedEvent | TimerStoppedEvent;
+export type TimerEvent =
+  | TimerLaunchedEvent
+  | TimerStartedEvent
+  | TimerStoppedEvent;
 
 interface TimerEventRecord {
   readonly dispatchedAt: number;

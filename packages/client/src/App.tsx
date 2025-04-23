@@ -10,7 +10,6 @@ import {
   dispatchTimerStopped,
 } from "./TimerEvents.js";
 
-const startingCallText = "試合開始";
 const callTexts = [
   { millis: 10 * 60000, text: "残り10分" },
   { millis: 5 * 60000, text: "残り5分" },
@@ -41,42 +40,46 @@ function App({ discordSdk }: AppProps) {
     calledMillis: Infinity,
     isRunning: false,
     matchStart: 0,
+    tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
   });
 
   function tick(timestamp: number = Date.now()) {
-    setTimerState(({ duration, calledMillis, isRunning, matchStart }) => {
-      const newRemainingMillis = duration - timestamp + matchStart;
+    setTimerState(
+      ({ duration, calledMillis, isRunning, matchStart, tickTimerStateId }) => {
+        const newRemainingMillis = duration - timestamp + matchStart;
 
-      for (const { millis, text } of callTexts) {
-        if (millis < calledMillis && newRemainingMillis <= millis) {
-          say(text);
-          calledMillis = millis;
-          break;
+        for (const { millis, text } of callTexts) {
+          if (millis < calledMillis && newRemainingMillis <= millis) {
+            say(text);
+            calledMillis = millis;
+            break;
+          }
         }
-      }
 
-      if (newRemainingMillis < 0) {
-        return {
+        if (newRemainingMillis < 0) {
+          return {
+            duration,
+            remainingMillis: 0,
+            calledMillis,
+            isRunning: false,
+            matchStart,
+            tickTimerStateId,
+          };
+        }
+
+        const nextPayload = {
           duration,
-          remainingMillis: 0,
+          remainingMillis: newRemainingMillis,
           calledMillis,
-          isRunning: false,
+          isRunning,
           matchStart,
+          tickTimerStateId,
         };
-      }
 
-      const nextPayload = {
-        duration,
-        remainingMillis: newRemainingMillis,
-        calledMillis,
-        isRunning,
-        matchStart,
-      };
-
-      return nextPayload;
-    });
+        return nextPayload;
+      },
+    );
   }
-
 
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
@@ -84,19 +87,22 @@ function App({ discordSdk }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         say(eventCallTexts.TimerStartedEvent.text);
+        const tickTimerStateId = setInterval(tick, 1000);
         setTimerState((oldTimerState) => ({
           ...oldTimerState,
-          isRunning: true,
           matchStart: event.dispatchedAt,
+          tickTimerStateId: tickTimerStateId,
         }));
-        setInterval(tick, 1000);
         tick();
         break;
       case "TimerStoppedEvent":
+        if (timerState.tickTimerStateId !== undefined) {
+          clearInterval(timerState.tickTimerStateId);
+        }
         setTimerState((oldTimerState) => ({
           ...oldTimerState,
-          isRunning: false,
-      }));
+          tickTimerStateId: undefined,
+        }));
     }
   }
 
@@ -119,7 +125,6 @@ function App({ discordSdk }: AppProps) {
     tickTimerEvent();
     dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
-
 
   function handleStart() {
     dispatchTimerStarted(discordSdk.instanceId, Date.now());
@@ -158,8 +163,12 @@ function App({ discordSdk }: AppProps) {
       <h1>試合タイマー</h1>
 
       <section>
-        <button onClick={handleStart} disabled={timerState.isRunning}>スタート</button>
-        <button onClick={handleStop} disabled={!timerState.isRunning}>ストップ</button>
+        <button onClick={handleStart} disabled={timerState.isRunning}>
+          スタート
+        </button>
+        <button onClick={handleStop} disabled={!timerState.isRunning}>
+          ストップ
+        </button>
       </section>
 
       <section>{JSON.stringify(timerEvents)}</section>
