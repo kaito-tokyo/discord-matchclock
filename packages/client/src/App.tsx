@@ -8,6 +8,7 @@ import {
   dispatchTimerLaunched,
   dispatchTimerStarted,
   dispatchTimerStopped,
+  dispatchTimerSetRemaining,
 } from "./TimerEvents.js";
 import { MatchclockConfig } from "discord-matchclock-common/MatchclockConfig.js";
 
@@ -115,6 +116,15 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           };
         });
         say(eventCallTexts.TimerStartedEvent.text);
+        break;
+      case "TimerSetRemainingEvent":
+        setTimerState((oldTimerState) => {
+          const elappsedMillis = event.dispatchedAt - oldTimerState.offsetMillis;
+          return {
+            ...oldTimerState,
+            durationInMillis: event.remainingMillis - elappsedMillis,
+          };
+        });
     }
   }
 
@@ -145,6 +155,15 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
 
   function handleStop() {
     dispatchTimerStopped(discordSdk.instanceId, Date.now());
+    tickTimerEvent();
+  }
+
+  function handleMinus() {
+    dispatchTimerSetRemaining(
+      discordSdk.instanceId,
+      Date.now(),
+      timerState.remainingMillis - 60000
+    );
     tickTimerEvent();
   }
 

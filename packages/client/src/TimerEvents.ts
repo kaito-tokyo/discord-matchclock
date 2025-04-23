@@ -10,14 +10,20 @@ export interface TimerStartedEvent {
 
 export interface TimerStoppedEvent {
   readonly dispatchedAt: number;
-  readonly durationInMillis: number
   readonly type: "TimerStoppedEvent";
+}
+
+export interface TimerSetRemainingEvent {
+  readonly dispatchedAt: number;
+  readonly remainingMillis: number;
+  readonly type: "TimerSetRemainingEvent";
 }
 
 export type TimerEvent =
   | TimerLaunchedEvent
   | TimerStartedEvent
-  | TimerStoppedEvent;
+  | TimerStoppedEvent
+  | TimerSetRemainingEvent;
 
 interface TimerEventRecord {
   readonly dispatchedAt: number;
@@ -89,15 +95,29 @@ export async function dispatchTimerStarted(
 
 export async function dispatchTimerStopped(
   instanceId: string,
-  dispatchedAt: number,
-  durationInMillis: number
+  dispatchedAt: number
 ): Promise<void> {
   dispatchTimerEvent(
     instanceId,
     {
       dispatchedAt,
-      durationInMillis,
       type: "TimerStoppedEvent",
+    },
+    dispatchedAt,
+  );
+}
+
+export async function dispatchTimerSetRemaining(
+  instanceId: string,
+  dispatchedAt: number,
+  remainingMillis: number
+): Promise<void> {
+  dispatchTimerEvent(
+    instanceId,
+    {
+      dispatchedAt,
+      remainingMillis,
+      type: "TimerSetRemainingEvent",
     },
     dispatchedAt,
   );
