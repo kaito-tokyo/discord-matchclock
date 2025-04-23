@@ -25,6 +25,7 @@ export async function handleMatchclockCommand(
               custom_id: "default_duration",
               style: TextInputStyle.Short,
               label: "Default duration in minutes",
+              value: "25",
             },
           ],
         },
