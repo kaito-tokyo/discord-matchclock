@@ -106,10 +106,11 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
+
           const elappsedMillis = event.dispatchedAt - oldTimerState.offsetMillis;
           return {
             ...oldTimerState,
-            remainingMillis: oldTimerState.remainingMillis - elappsedMillis,
+            durationInMillis: oldTimerState.durationInMillis - elappsedMillis,
             tickTimerStateId: undefined,
           };
         });
