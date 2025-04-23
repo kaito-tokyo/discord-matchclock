@@ -5,10 +5,6 @@ import { EventRecorder } from "./EventRecorder.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
-
 app.post("/timerEvents/:instanceId", async (c) => {
   const { instanceId } = c.req.param();
   const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(

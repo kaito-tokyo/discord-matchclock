@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 
+import {
+  type TimerEvent,
+  fetchTimerEvents,
+  dispatchTimerLaunched,
+  dispatchTimerStarted,
+} from "./TimerEvents.js";
+
 const startingCallText = "試合開始";
 const callTexts = [
   { millis: 10 * 60000, text: "残り10分" },
@@ -9,12 +16,6 @@ const callTexts = [
   { millis: 1 * 60000, text: "残り1分" },
   { millis: 0, text: "試合終了、速やかに試合を終了してください" },
 ];
-
-interface TimerStartEvent {
-  readonly type: "TimerStartEvent";
-}
-
-type TimerEvent = TimerStartEvent;
 
 function say(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
@@ -105,37 +106,6 @@ function App({ discordSdk }: AppProps) {
     });
   }
 
-  async function dispatchTimerEvent(
-    instanceId: string,
-    timerEvent: TimerEvent,
-  ): Promise<void> {
-    const response = await fetch(
-      `/.proxy/api/timerEvents/${instanceId}?dispatchedAt=${Date.now()}`,
-      {
-        method: "POST",
-        body: JSON.stringify(timerEvent),
-      },
-    );
-
-    if (!response.ok) {
-      console.error("Failed to push event", response);
-      throw new Error("Failed to push event");
-    }
-  }
-
-  async function fetchTimerEvents(instanceId: string): Promise<TimerEvent[]> {
-    const response = await fetch(`/.proxy/api/timerEvents/${instanceId}`);
-
-    if (!response.ok) {
-      console.error("Failed to fetch events", response);
-      throw new Error("Failed to fetch events");
-    }
-
-    const timerEvents: TimerEvent[] = await response.json();
-
-    return timerEvents;
-  }
-
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
   useEffect(() => {
@@ -147,12 +117,11 @@ function App({ discordSdk }: AppProps) {
           : newTimerEvents,
       );
     }, 1000);
+    dispatchTimerLaunched(discordSdk.instanceId, Date.now());
   }, []);
 
   function handleStart() {
-    dispatchTimerEvent(discordSdk.instanceId, {
-      type: "TimerStartEvent",
-    });
+    dispatchTimerStarted(discordSdk.instanceId, Date.now());
   }
 
   useEffect(() => {
