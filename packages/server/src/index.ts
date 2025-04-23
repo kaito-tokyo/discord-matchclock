@@ -37,7 +37,7 @@ app.post("/", async (c) => {
   }
 
   const interaction = await c.req.json();
-  console.error("Received interaction", interaction);
+  console.error("Received interaction", JSON.stringify(interaction));
 
   if (interaction.type === InteractionType.PING) {
     return c.json({ type: InteractionResponseType.PONG });
