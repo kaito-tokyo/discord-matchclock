@@ -10,7 +10,10 @@ import { verifyKey } from "discord-interactions";
 import { Bindings } from "./Bindings.js";
 import { EventRecorder } from "./EventRecorder.js";
 import { MATCHCLOCK_COMMAND } from "./bot/commands.js";
-import { handleConfigureMatchclockSubmit, handleMatchclockCommand } from "./bot/handleMatchclock.js";
+import {
+  handleConfigureMatchclockSubmit,
+  handleMatchclockCommand,
+} from "./bot/handleMatchclock.js";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
