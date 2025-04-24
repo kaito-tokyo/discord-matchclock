@@ -136,18 +136,23 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
 
   async function tickTimerEvent() {
     timerEventsWebSocket.send(JSON.stringify({ type: "getEvents" }));
+  }
 
-    const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
-    await setTimerEvents((oldTimerEvents) => {
-      if (newTimerEvents.length === oldTimerEvents.length) {
-        return oldTimerEvents;
-      } else {
-        for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
-          handleTimerEvent(newTimerEvents[i]);
+  async function onTimerEventMessage(event: MessageEvent) {
+    const message = JSON.parse(event.data);
+    if (message.type === "getEventsResponse") {
+      const newTimerEvents = message.events;
+      await setTimerEvents((oldTimerEvents) => {
+        if (newTimerEvents.length === oldTimerEvents.length) {
+          return oldTimerEvents;
+        } else {
+          for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
+            handleTimerEvent(newTimerEvents[i]);
+          }
+          return newTimerEvents;
         }
-        return newTimerEvents;
-      }
-    });
+      });
+    }
   }
 
   useEffect(() => {
@@ -155,6 +160,8 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
       setInterval(tickTimerEvent, 10000);
       setTimeout(tickTimerEvent, 1000);
     });
+
+    timerEventsWebSocket.onmessage = onTimerEventMessage;
   }, []);
 
   async function handleStart() {
