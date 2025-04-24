@@ -44,7 +44,7 @@ export class EventRecorder extends DurableObject {
     code: number,
     reason: string,
     wasClean: boolean,
-  ): void | Promise<void> {
+  ) {
     ws.close(code, "Durable Object is closing WebSocket");
   }
 
