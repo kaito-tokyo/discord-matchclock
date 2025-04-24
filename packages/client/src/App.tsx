@@ -41,8 +41,6 @@ interface AppProps {
 }
 
 function App({ discordSdk, matchclockConfig }: AppProps) {
-  const [bodyFilter, setBodyFilter] = useState("blur(0)");
-
   const [timerState, setTimerState] = useState({
     tickTimerStateId: undefined as ReturnType<typeof setInterval> | undefined,
     durationInMillis: matchclockConfig.defaultDurationInMinutes * 60000,
@@ -52,7 +50,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   });
 
   async function tick(now: number = Date.now()) {
-    await setBodyFilter("blur(0)");
     await setTimerState((oldTimerState) => {
       const { durationInMillis, offsetMillis } = oldTimerState;
 
@@ -178,7 +175,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }, []);
 
   async function handleStart() {
-    setBodyFilter("blur(20px)");
     await dispatchTimerStarted(discordSdk.instanceId, Date.now());
     await tickTimerEvent();
   }
@@ -223,8 +219,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
-        filter: bodyFilter,
-        transition: "filter 0.5s",
       }}
     >
       <section>
