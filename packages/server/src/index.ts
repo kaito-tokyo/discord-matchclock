@@ -123,9 +123,9 @@ app.get("/timerEvents/:instanceId", async (c) => {
     `timer ${instanceId}`,
   );
   const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
-  
+
   if (c.req.header("upgrade") === "websocket") {
-    return timerDispatcher.fetch(c.req.raw)
+    return timerDispatcher.fetch(c.req.raw);
   } else {
     return c.json(await timerDispatcher.getEvents());
   }

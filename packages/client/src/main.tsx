@@ -26,9 +26,9 @@ async function setup() {
     matchclockConfig = defaultMatchclockConfig;
   }
 
-  console.log(matchclockConfig);
-
-  const timerEventsWebSocket = new WebSocket(`wss://${location.host}/.proxy/api/timerEvents/${discordSdk.instanceId}`);
+  const timerEventsWebSocket = new WebSocket(
+    `wss://${location.host}/.proxy/api/timerEvents/${discordSdk.instanceId}`,
+  );
 
   return {
     matchclockConfig,
@@ -36,10 +36,14 @@ async function setup() {
   };
 }
 
-setup().then(({ matchclockConfig }) => {
+setup().then(({ matchclockConfig, timerEventsWebSocket }) => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App discordSdk={discordSdk} matchclockConfig={matchclockConfig} />
+      <App
+        discordSdk={discordSdk}
+        matchclockConfig={matchclockConfig}
+        timerEventsWebSocket={timerEventsWebSocket}
+      />
     </StrictMode>,
   );
 });

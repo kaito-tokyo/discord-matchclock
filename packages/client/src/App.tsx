@@ -135,7 +135,7 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
   }
 
   async function tickTimerEvent() {
-    timerEventsWebSocket.send(JSON.stringify({type: "getEvents"}));
+    timerEventsWebSocket.send(JSON.stringify({ type: "getEvents" }));
 
     const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
     await setTimerEvents((oldTimerEvents) => {
