@@ -57,7 +57,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       const elappsedMillis = now - offsetMillis;
       const remainingMillis = durationInMillis - elappsedMillis;
 
-      let calledMillis = Infinity;
+      let calledMillis = oldTimerState.calledMillis;
       for (const { millis, text } of callTexts) {
         if (millis < oldTimerState.calledMillis && remainingMillis <= millis) {
           say(text);
@@ -99,11 +99,9 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
   async function handleTimerEvent(event: TimerEvent) {
-    console.log("handle", JSON.stringify(event));
     switch (event.type) {
       case "TimerStartedEvent":
         await setTimerState((oldTimerState) => {
-          console.log("StartedEvent", JSON.stringify(oldTimerState));
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
