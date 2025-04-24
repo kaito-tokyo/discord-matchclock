@@ -4,7 +4,6 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 
 import {
   type TimerEvent,
-  fetchTimerEvents,
   dispatchTimerLaunched,
   dispatchTimerStarted,
   dispatchTimerStopped,
@@ -39,10 +38,9 @@ function say(text: string) {
 interface AppProps {
   readonly discordSdk: DiscordSDK;
   readonly matchclockConfig: MatchclockConfig;
-  readonly timerEventsWebSocket: WebSocket;
 }
 
-function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
+function App({ discordSdk, matchclockConfig }: AppProps) {
   const [bodyFilter, setBodyFilter] = useState("blur(0)");
 
   const [timerState, setTimerState] = useState({
@@ -87,6 +85,11 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
       };
     });
   }
+
+  const [timerEventsConnection, setTimerEventsConnection] = useState({
+    ws: undefined as WebSocket | undefined,
+    ready: false,
+  });
 
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
@@ -135,18 +138,19 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
   }
 
   async function tickTimerEvent() {
-    timerEventsWebSocket.send(JSON.stringify({ type: "getEvents" }));
+    const { ws, ready } = timerEventsConnection;
+    if (ws && ready) {
+      ws.send(JSON.stringify({ type: "getEvents" }))
+    }
   }
 
-  async function onTimerEventMessage(event: MessageEvent) {
-    console.log(event)
+  function onTimerEventMessage(event: MessageEvent<string>) {
     const message = JSON.parse(event.data);
-    console.log(message);
-    console.log(message.type);
+    console.log("message.type", message.type);
+    console.log("message.events", message.events);
     if (message.type === "getEventsResponse") {
       const newTimerEvents = message.events;
-      console.log(newTimerEvents);
-      await setTimerEvents((oldTimerEvents) => {
+      setTimerEvents((oldTimerEvents) => {
         if (newTimerEvents.length === oldTimerEvents.length) {
           return oldTimerEvents;
         } else {
@@ -165,8 +169,24 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
       setTimeout(tickTimerEvent, 100);
     });
 
-    timerEventsWebSocket.onmessage = onTimerEventMessage;
-  }, []);
+    const ws = new WebSocket(
+      `wss://${location.host}/.proxy/timerEvents/${discordSdk.instanceId}`
+    );
+
+    ws.onopen = () => {
+      setTimerEventsConnection({
+        ws,
+        ready: true,
+      });
+    };
+
+    ws.onmessage = onTimerEventMessage;
+
+    setTimerEventsConnection({
+      ws,
+      ready: false,
+    })
+  }, [timerEventsConnection]);
 
   async function handleStart() {
     setBodyFilter("blur(20px)");
