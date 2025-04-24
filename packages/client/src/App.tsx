@@ -151,7 +151,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   function onTimerEventMessage(event: MessageEvent<string>) {
     const message = JSON.parse(event.data);
     console.log("message.type", message.type);
-    console.log("message.events", message.events);
+    console.log("message.events", JSON.stringify(message.events));
     if (message.type === "getEventsResponse") {
       const newTimerEvents = message.events;
       setTimerEvents((oldTimerEvents) => {
@@ -159,6 +159,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
           return oldTimerEvents;
         } else {
           for (let i = oldTimerEvents.length; i < newTimerEvents.length; i++) {
+            console.log("i", JSON.stringify(newTimerEvents[i]));
             handleTimerEvent(newTimerEvents[i]);
           }
           return newTimerEvents;
