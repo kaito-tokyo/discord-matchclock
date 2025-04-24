@@ -25,26 +25,22 @@ export type TimerEvent =
   | TimerStoppedEvent
   | TimerSetRemainingEvent;
 
-interface TimerEventRecord {
+export interface TimerEventRecord {
   readonly dispatchedAt: number;
   readonly type: "TimerLaunchedEvent" | "TimerStartEvent";
   readonly payload: string;
 }
 
-export async function fetchTimerEvents(
-  instanceId: string,
-): Promise<TimerEvent[]> {
-  const response = await fetch(`/.proxy/api/timerEvents/${instanceId}`);
-
-  if (!response.ok) {
-    console.error("Failed to fetch timer events", response);
-    throw new Error("Failed to fetch timer events");
-  }
-
-  const timerEventRecords: TimerEventRecord[] = await response.json();
-
-  return timerEventRecords.map((record) => JSON.parse(record.payload));
+export type TimerEventSocketGetEventsMessage = {
+  readonly type: "getEvents";
 }
+
+export type TimerEventSocketGetEventsResponseMessage = {
+  readonly type: "getEventsResponse";
+  readonly timerEventRecords: TimerEventRecord[];
+}
+
+export type TimerEventSocketMessage = TimerEventSocketGetEventsMessage | TimerEventSocketGetEventsResponseMessage;
 
 async function dispatchTimerEvent(
   instanceId: string,

@@ -8,6 +8,7 @@ import {
   dispatchTimerStarted,
   dispatchTimerStopped,
   dispatchTimerSetRemaining,
+  TimerEventSocketMessage,
 } from "./TimerEvents.js";
 import { MatchclockConfig } from "discord-matchclock-common/MatchclockConfig.js";
 
@@ -145,16 +146,18 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   async function tickTimerEvent() {
     const { ws } = timerEventsConnection;
     if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: "getEvents" }));
+      const timerEventGetEventsMessage: TimerEventSocketMessage = {
+        type: "getEvents",
+      };
+      ws.send(JSON.stringify(timerEventGetEventsMessage));
     }
   }
 
   function onTimerEventMessage(event: MessageEvent<string>) {
-    const message = JSON.parse(event.data);
-    console.log("message.type", message.type);
-    console.log("message.events", JSON.stringify(message.events));
+    const message: TimerEventSocketMessage = JSON.parse(event.data);
     if (message.type === "getEventsResponse") {
-      const newTimerEvents = message.events;
+      const { timerEventRecords } = message;
+      const newTimerEvents = timerEventRecords.map((record) => JSON.parse(record.payload));
       setTimerEvents((oldTimerEvents) => {
         if (newTimerEvents.length === oldTimerEvents.length) {
           return oldTimerEvents;
