@@ -112,7 +112,7 @@ app.post("/timerEvents/:instanceId", async (c) => {
   const payload = await c.req.text();
   await timerDispatcher.putEvent(dispatchedAt, payload);
 
-  caches.default.delete(c.req.url);
+  //caches.default.delete(c.req.url);
 
   return c.text("OK");
 });
