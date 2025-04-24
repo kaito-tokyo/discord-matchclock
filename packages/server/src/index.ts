@@ -123,11 +123,12 @@ app.get("/timerEvents/:instanceId", async (c) => {
     `timer ${instanceId}`,
   );
   const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
-  const events = await timerDispatcher.getEvents();
-
-  c.header("Cache-Control", "public, max-age=3600");
-
-  return c.json(events);
+  
+  if (c.req.header("upgrade") === "websocket") {
+    return timerDispatcher.fetch(c.req.raw)
+  } else {
+    return c.json(await timerDispatcher.getEvents());
+  }
 });
 
 export default app;
