@@ -102,6 +102,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     switch (event.type) {
       case "TimerStartedEvent":
         await setTimerState((oldTimerState) => {
+          console.log("StartedEvent", JSON.stringify(oldTimerState));
           if (oldTimerState.tickTimerStateId !== undefined) {
             clearInterval(oldTimerState.tickTimerStateId);
           }
