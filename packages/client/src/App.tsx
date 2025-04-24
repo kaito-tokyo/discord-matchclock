@@ -91,18 +91,10 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       `wss://${location.host}/.proxy/api/timerEvents/${discordSdk.instanceId}`,
     );
 
-    ws.onopen = () => {
-      setTimerEventsConnection({
-        ws,
-        ready: true,
-      });
-    };
-
     ws.onmessage = onTimerEventMessage;
 
     return {
       ws,
-      ready: false,
     };
   });
 
@@ -153,8 +145,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }
 
   async function tickTimerEvent() {
-    const { ws, ready } = timerEventsConnection;
-    if (ws && ready) {
+    const { ws } = timerEventsConnection;
+    if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: "getEvents" }));
     }
   }
