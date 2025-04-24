@@ -7,13 +7,15 @@ export class EventRecorder extends DurableObject {
     super(ctx, env);
     this.sql = ctx.storage.sql;
 
-    this.sql.exec(`
-      CREATE TABLE IF NOT EXISTS Events(
-        id INTEGER     PRIMARY KEY AUTOINCREMENT,
-        dispatched_at  INTEGER,
-        payload        JSON
-      );
-    `);
+    this.ctx.blockConcurrencyWhile(async () => {
+      this.sql.exec(`
+        CREATE TABLE IF NOT EXISTS Events(
+          id INTEGER     PRIMARY KEY AUTOINCREMENT,
+          dispatched_at  INTEGER,
+          payload        JSON
+        );
+      `);
+    });
   }
 
   async putEvent(dispatchedAt: number, payload: string) {
