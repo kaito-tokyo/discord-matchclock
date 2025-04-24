@@ -34,10 +34,7 @@ async function setup() {
 setup().then(({ matchclockConfig }) => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App
-        discordSdk={discordSdk}
-        matchclockConfig={matchclockConfig}
-      />
+      <App discordSdk={discordSdk} matchclockConfig={matchclockConfig} />
     </StrictMode>,
   );
 });
