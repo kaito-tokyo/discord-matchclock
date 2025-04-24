@@ -30,6 +30,12 @@ async function setup() {
     `wss://${location.host}/.proxy/api/timerEvents/${discordSdk.instanceId}`,
   );
 
+  console.log(timerEventsWebSocket);
+
+  await new Promise<void>((resolve) => {
+    timerEventsWebSocket.onopen = () => { resolve(); };
+  });
+
   return {
     matchclockConfig,
     timerEventsWebSocket,
