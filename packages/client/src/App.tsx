@@ -86,9 +86,24 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
     });
   }
 
-  const [timerEventsConnection, setTimerEventsConnection] = useState({
-    ws: undefined as WebSocket | undefined,
-    ready: false,
+  const [timerEventsConnection, setTimerEventsConnection] = useState(() => {
+    const ws = new WebSocket(
+      `wss://${location.host}/.proxy/timerEvents/${discordSdk.instanceId}`
+    );
+
+    ws.onopen = () => {
+      setTimerEventsConnection({
+        ws,
+        ready: true,
+      });
+    };
+
+    ws.onmessage = onTimerEventMessage;
+
+    return {
+      ws,
+      ready: false,
+    };
   });
 
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
@@ -168,25 +183,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
       setInterval(tickTimerEvent, 1000);
       setTimeout(tickTimerEvent, 100);
     });
-
-    const ws = new WebSocket(
-      `wss://${location.host}/.proxy/timerEvents/${discordSdk.instanceId}`
-    );
-
-    ws.onopen = () => {
-      setTimerEventsConnection({
-        ws,
-        ready: true,
-      });
-    };
-
-    ws.onmessage = onTimerEventMessage;
-
-    setTimerEventsConnection({
-      ws,
-      ready: false,
-    })
-  }, [timerEventsConnection]);
+  }, []);
 
   async function handleStart() {
     setBodyFilter("blur(20px)");
