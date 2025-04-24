@@ -161,8 +161,8 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
 
   useEffect(() => {
     dispatchTimerLaunched(discordSdk.instanceId, Date.now()).then(() => {
-      setInterval(tickTimerEvent, 10000);
-      setTimeout(tickTimerEvent, 1000);
+      setInterval(tickTimerEvent, 1000);
+      setTimeout(tickTimerEvent, 100);
     });
 
     timerEventsWebSocket.onmessage = onTimerEventMessage;
