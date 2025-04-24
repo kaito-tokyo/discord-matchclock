@@ -33,14 +33,16 @@ export interface TimerEventRecord {
 
 export type TimerEventSocketGetEventsMessage = {
   readonly type: "getEvents";
-}
+};
 
 export type TimerEventSocketGetEventsResponseMessage = {
   readonly type: "getEventsResponse";
   readonly timerEventRecords: TimerEventRecord[];
-}
+};
 
-export type TimerEventSocketMessage = TimerEventSocketGetEventsMessage | TimerEventSocketGetEventsResponseMessage;
+export type TimerEventSocketMessage =
+  | TimerEventSocketGetEventsMessage
+  | TimerEventSocketGetEventsResponseMessage;
 
 async function dispatchTimerEvent(
   instanceId: string,

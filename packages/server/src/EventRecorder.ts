@@ -33,7 +33,7 @@ export class EventRecorder extends DurableObject {
       ws.send(
         JSON.stringify({
           type: "getEventsResponse",
-          events: this.sql.exec("SELECT * FROM Events;").toArray(),
+          timerEventRecords: this.sql.exec("SELECT * FROM Events;").toArray(),
         }),
       );
     }
