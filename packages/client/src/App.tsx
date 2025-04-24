@@ -98,6 +98,7 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   const [timerEvents, setTimerEvents] = useState<TimerEvent[]>([]);
 
   async function handleTimerEvent(event: TimerEvent) {
+    console.log("handle", JSON.stringify(event));
     switch (event.type) {
       case "TimerStartedEvent":
         await setTimerState((oldTimerState) => {
@@ -124,7 +125,6 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
             durationInMillis: oldTimerState.durationInMillis - elappsedMillis,
             tickTimerStateId: undefined,
           };
-          z;
         });
         say(eventCallTexts.TimerStoppedEvent.text);
         break;
