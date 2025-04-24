@@ -125,7 +125,7 @@ app.get("/timerEvents/:instanceId", async (c) => {
   const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
   const events = await timerDispatcher.getEvents();
 
-  c.header("Cache-Control", "public, s-maxage=600");
+  c.header("Cache-Control", "public, maxage=3600");
 
   return c.json(events);
 });
