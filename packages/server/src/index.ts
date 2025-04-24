@@ -112,18 +112,26 @@ app.post("/timerEvents/:instanceId", async (c) => {
   const payload = await c.req.text();
   await timerDispatcher.putEvent(dispatchedAt, payload);
 
+  caches.default.delete(c.req.raw);
+
   return c.text("OK");
 });
 
-app.get("/timerEvents/:instanceId", async (c) => {
-  const { instanceId } = c.req.param();
-  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
-    `timer ${instanceId}`,
-  );
-  const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
-  const events = await timerDispatcher.getEvents();
-  return c.json(events);
-});
+app.get(
+  "/timerEvents/:instanceId",
+  async (c) => {
+    const { instanceId } = c.req.param();
+    const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
+      `timer ${instanceId}`,
+    );
+    const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
+    const events = await timerDispatcher.getEvents();
+
+    c.header("Cache-Control", "s-maxage=60, must-revalidate");
+
+    return c.json(events);
+  },
+);
 
 export default app;
 export { EventRecorder };
