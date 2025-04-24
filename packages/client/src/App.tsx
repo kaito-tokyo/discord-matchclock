@@ -39,9 +39,10 @@ function say(text: string) {
 interface AppProps {
   readonly discordSdk: DiscordSDK;
   readonly matchclockConfig: MatchclockConfig;
+  readonly timerEventsWebSocket: WebSocket;
 }
 
-function App({ discordSdk, matchclockConfig }: AppProps) {
+function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
   const [bodyFilter, setBodyFilter] = useState("blur(0)");
 
   const [timerState, setTimerState] = useState({
@@ -134,6 +135,8 @@ function App({ discordSdk, matchclockConfig }: AppProps) {
   }
 
   async function tickTimerEvent() {
+    timerEventsWebSocket.send(JSON.stringify({type: "getEvents"}));
+
     const newTimerEvents = await fetchTimerEvents(discordSdk.instanceId);
     await setTimerEvents((oldTimerEvents) => {
       if (newTimerEvents.length === oldTimerEvents.length) {
