@@ -117,21 +117,18 @@ app.post("/timerEvents/:instanceId", async (c) => {
   return c.text("OK");
 });
 
-app.get(
-  "/timerEvents/:instanceId",
-  async (c) => {
-    const { instanceId } = c.req.param();
-    const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
-      `timer ${instanceId}`,
-    );
-    const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
-    const events = await timerDispatcher.getEvents();
+app.get("/timerEvents/:instanceId", async (c) => {
+  const { instanceId } = c.req.param();
+  const timerDispatcherId = c.env.EVENT_RECORDER.idFromName(
+    `timer ${instanceId}`,
+  );
+  const timerDispatcher = c.env.EVENT_RECORDER.get(timerDispatcherId);
+  const events = await timerDispatcher.getEvents();
 
-    c.header("Cache-Control", "s-maxage=60, must-revalidate");
+  c.header("Cache-Control", "s-maxage=60, must-revalidate");
 
-    return c.json(events);
-  },
-);
+  return c.json(events);
+});
 
 export default app;
 export { EventRecorder };
