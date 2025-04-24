@@ -141,8 +141,11 @@ function App({ discordSdk, matchclockConfig, timerEventsWebSocket }: AppProps) {
   async function onTimerEventMessage(event: MessageEvent) {
     console.log(event)
     const message = JSON.parse(event.data);
+    console.log(message);
+    console.log(message.type);
     if (message.type === "getEventsResponse") {
       const newTimerEvents = message.events;
+      console.log(newTimerEvents);
       await setTimerEvents((oldTimerEvents) => {
         if (newTimerEvents.length === oldTimerEvents.length) {
           return oldTimerEvents;
